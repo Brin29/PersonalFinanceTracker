@@ -36,7 +36,7 @@ export function StatCard({
         className={`mt-2 flex items-center gap-1.5 text-xs font-medium ${tone}`}
       >
         <Icon size={14} />
-        {isLoading ? "cargando…" : periodLabel}
+        {isLoading ? "" : periodLabel}
       </p>
     </div>
   );

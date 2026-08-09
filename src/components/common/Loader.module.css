@@ -1,6 +1,6 @@
 .box {
   transform-origin: 50% 50%;
-  fill: var(--ink-soft)
+  fill: var(--leaf-600)
 }
 
 .overlay {
@@ -14,20 +14,20 @@
   z-index: 10000000;
 }
 
-.overlay svg rect:not(.box1) {
-  fill: var(--loader-fg);
-}
+/* .overlay svg rect:not(.box1) {
+  fill: var(--leaf-500);
+} */
  
 
-.box1 { animation: box-1 4s infinite; }
-.box2 { animation: box-2 4s infinite; }
-.box3 { animation: box-3 4s infinite; }
-.box4 { animation: box-4 4s infinite; }
-.box5 { animation: box-5 4s infinite; }
-.box6 { animation: box-6 4s infinite; }
-.box7 { animation: box-7 4s infinite; }
-.box8 { animation: box-8 4s infinite; }
-.box9 { animation: box-9 4s infinite; }
+.box1 { animation: box-1 4s infinite; fill: var(--ink-soft)}
+.box2 { animation: box-2 4s infinite; fill: var(--line)}
+.box3 { animation: box-3 4s infinite; fill: var(--line)}
+.box4 { animation: box-4 4s infinite; fill: var(--ink-soft)}
+.box5 { animation: box-5 4s infinite; fill: var(--line)}
+.box6 { animation: box-6 4s infinite; fill: var(--paper)}
+.box7 { animation: box-7 4s infinite; fill: var(--ink-soft)}
+.box8 { animation: box-8 4s infinite; fill: var(--line)}
+.box9 { animation: box-9 4s infinite; fill: var(--leaf-50)}
 
 @keyframes box-1 {
   9.0909090909%  { transform: translate(-12px, 0); }

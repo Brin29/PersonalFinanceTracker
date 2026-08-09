@@ -1,8 +1,10 @@
 import { apiClient } from "../lib/api/client";
 import type {
   AuthResponse,
+  CheckEmailResponse,
   DeleteAccountResponse,
   LoginInput,
+  MagicLinkResponse,
   ProfileInput,
   ProfileResponse,
   RegisterInput,
@@ -11,6 +13,7 @@ import type {
   User,
   VerifyCodeInput,
   VerifyCodeResponse,
+  VerifyMagicTokenResponse,
 } from "../lib/types/auth";
 
 export async function login(data: LoginInput): Promise<AuthResponse> {
@@ -47,6 +50,36 @@ export async function verifyCode(
   const response = await apiClient.post<VerifyCodeResponse>("/auth/verify-code", {
     data,
   });
+  return response.data;
+}
+
+export async function checkEmail(data: {
+  email: string;
+}): Promise<CheckEmailResponse> {
+  const response = await apiClient.post<CheckEmailResponse>(
+    "/auth/check-email",
+    { data },
+  );
+  return response.data;
+}
+
+export async function generateMagicLink(data: {
+  email: string;
+}): Promise<MagicLinkResponse> {
+  const response = await apiClient.post<MagicLinkResponse>(
+    "/auth/magic-link-generate",
+    { data },
+  );
+  return response.data;
+}
+
+export async function verifyMagicToken(
+  magicToken: string,
+): Promise<VerifyMagicTokenResponse> {
+  const response = await apiClient.post<VerifyMagicTokenResponse>(
+    "/auth/verify-magic-token",
+    { data: { magic_token: magicToken } },
+  );
   return response.data;
 }
 

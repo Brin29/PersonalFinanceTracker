@@ -72,6 +72,23 @@ export interface ApiErrorBody {
   error?: string;
 }
 
+export interface CheckEmailResponse {
+  code: string;
+  message: string;
+  exists: boolean;
+}
+
+export interface MagicLinkResponse {
+  code: string;
+  message: string;
+}
+
+export interface VerifyMagicTokenResponse {
+  code: string;
+  message: string;
+  user: User;
+}
+
 export interface EmailStepValues {
   email: string;
 }

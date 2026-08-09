@@ -21,7 +21,8 @@ export function EmailStep({ form, isBusy, onSubmit }: EmailStepProps) {
           Crea tu cuenta
         </h1>
         <p className="mt-1 text-sm text-ink-soft">
-          Ingresa tu correo y te enviaremos un código de verificación.
+          Ingresa tu correo para continuar. Si ya tienes una cuenta, te
+          enviaremos un enlace de acceso.
         </p>
       </div>
 
@@ -42,7 +43,7 @@ export function EmailStep({ form, isBusy, onSubmit }: EmailStepProps) {
       />
 
       <button type="submit" className="btn-primary mt-2" disabled={isBusy}>
-        {isBusy ? "Enviando…" : "Enviar código"}
+        {isBusy ? "Verificando…" : "Continuar"}
       </button>
     </form>
   );

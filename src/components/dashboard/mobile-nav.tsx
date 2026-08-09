@@ -40,10 +40,10 @@ export function MobileNav() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
+      className="items-center fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
       aria-label="Navegación móvil"
     >
-      <div className="grid grid-cols-5">
+      <div className="grid grid-cols-4">
         {items.map((item) => (
           <MobileNavItem key={item.href} item={item} pathname={pathname} />
         ))}

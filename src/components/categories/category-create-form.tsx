@@ -30,7 +30,7 @@ export function CategoryCreateForm({
           id="new-category-type"
           value={newType}
           onChange={(event) => onTypeChange(event.target.value as CategoryType)}
-          className="field-input"
+          className="field-input h-12 sm:w-24"
         >
           <option value="expense">{CATEGORY_TYPE_LABELS.expense}</option>
           <option value="income">{CATEGORY_TYPE_LABELS.income}</option>
@@ -46,7 +46,7 @@ export function CategoryCreateForm({
           onChange={(event) => onNameChange(event.target.value)}
           maxLength={50}
           placeholder="Nombre de la nueva categoría"
-          className="field-input"
+          className="field-input h-12"
         />
       </div>
       <button

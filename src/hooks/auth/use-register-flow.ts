@@ -4,6 +4,10 @@ import {
   useRequestCode,
   useVerifyCode,
 } from "./mutations/useRegister";
+import {
+  useCheckEmail,
+  useMagicLinkGenerate,
+} from "./mutations/useMagicLink";
 import { useEffect, useState } from "react";
 import { FeedbackInfo } from "@/components/ui/info-modal";
 import { SubmitHandler, useForm, useWatch } from "react-hook-form";
@@ -18,6 +22,8 @@ export function useRegisterFlow() {
   const requestCode = useRequestCode();
   const verifyCode = useVerifyCode();
   const registerMutation = useRegister();
+  const checkEmailMutation = useCheckEmail();
+  const magicLinkMutation = useMagicLinkGenerate();
 
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
@@ -42,8 +48,24 @@ export function useRegisterFlow() {
 
   const handleEmailSubmit: SubmitHandler<EmailStepValues> = async (values) => {
     try {
-      const response = await requestCode.mutateAsync(values);
+      const emailCheck = await checkEmailMutation.mutateAsync({
+        email: values.email,
+      });
       setEmail(values.email);
+
+      if (emailCheck.exists) {
+        await magicLinkMutation.mutateAsync({ email: values.email });
+        setFeedback({
+          tone: "success",
+          title: "Ya tienes una cuenta",
+          message:
+            "Este correo ya está registrado. Te enviamos un enlace de acceso a tu bandeja de entrada para entrar a tu panel.",
+          onAccept: () => setStep(1),
+        });
+        return;
+      }
+
+      const response = await requestCode.mutateAsync(values);
       setDevCode(response.code ?? null);
       setFeedback({
         tone: "success",
@@ -54,7 +76,7 @@ export function useRegisterFlow() {
     } catch (error) {
       setFeedback({
         tone: "error",
-        title: "No se pudo enviar el código",
+        title: "No se pudo continuar",
         message: getMutationErrorMessage(error.code),
       });
     }
@@ -117,7 +139,11 @@ export function useRegisterFlow() {
     }
   };
 
-  const isEmailBusy = emailForm.formState.isSubmitting || requestCode.isPending;
+  const isEmailBusy =
+    emailForm.formState.isSubmitting ||
+    requestCode.isPending ||
+    checkEmailMutation.isPending ||
+    magicLinkMutation.isPending;
   const isCodeBusy = codeForm.formState.isSubmitting || verifyCode.isPending;
   const isRegisterBusy =
     registerForm.formState.isSubmitting || registerMutation.isPending;

@@ -79,10 +79,10 @@ export function UserMenu() {
               <p className="truncate text-sm font-semibold text-ink">
                 {user
                   ? `${user.firstName} ${user.lastName}`
-                  : "Cargando…"}
+                  : ""}
               </p>
               <p className="truncate text-xs text-ink-soft">
-                {user?.email ?? "…"}
+                {user?.email ?? ""}
               </p>
             </div>
           </div>

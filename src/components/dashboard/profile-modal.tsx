@@ -144,7 +144,7 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
 
           <div className="text-center">
             <p className="text-base font-semibold text-ink">
-              {user ? `${user.firstName} ${user.lastName}` : "Cargando…"}
+              {user ? `${user.firstName} ${user.lastName}` : ""}
             </p>
             <p className="mt-0.5 text-sm text-ink-soft">{user?.email ?? "…"}</p>
             {provider ? (

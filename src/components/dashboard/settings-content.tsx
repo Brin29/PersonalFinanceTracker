@@ -139,7 +139,7 @@ export default function SettingsContent() {
   };
 
   return (
-    <div className="flex max-w-4xl flex-col gap-6">
+    <div className="flex w-full flex-col gap-6">
       <div>
         <h2 className="text-2xl font-semibold tracking-tight text-ink">
           Configuración
@@ -149,7 +149,7 @@ export default function SettingsContent() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-6 lg:flex-row lg:gap-8">
+      <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:gap-8">
         <section
           className="min-w-0 flex-1 rounded-2xl border border-line bg-surface p-5 sm:p-6"
           aria-label="Información personal"
@@ -187,9 +187,9 @@ export default function SettingsContent() {
 
           <div className="min-w-0">
             <p className="truncate text-base font-semibold text-ink">
-              {user ? `${user.firstName} ${user.lastName}` : "Cargando…"}
+              {user ? `${user.firstName} ${user.lastName}` : " "}
             </p>
-            <p className="truncate text-sm text-ink-soft">{user?.email ?? "…"}</p>
+            <p className="truncate text-sm text-ink-soft">{user?.email ?? ""}</p>
             {provider ? (
               <p className="mt-1.5">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-leaf-50 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-leaf-700">
@@ -197,7 +197,7 @@ export default function SettingsContent() {
                   {provider}
                 </span>
               </p>
-            ) : null}
+            ) : " "}
           </div>
         </div>
 
@@ -253,10 +253,10 @@ export default function SettingsContent() {
       </section>
 
       <section
-        className="shrink-0 rounded-2xl border border-red-200 bg-red-50/50 p-5 dark:border-red-500/25 dark:bg-red-950/20 sm:p-6 lg:w-72 lg:self-stretch xl:w-80"
+        className="shrink-0 rounded-2xl border border-red-200 bg-red-50/50 p-5 dark:border-red-500/25 dark:bg-red-950/20 sm:p-6 xl:w-80"
         aria-label="Zona de peligro"
       >
-        <div className="flex flex-wrap items-center justify-between gap-4 lg:h-full lg:flex-col lg:items-stretch lg:justify-between">
+        <div className="flex flex-col gap-4">
           <div>
             <h3 className="text-base font-semibold tracking-tight text-ink">
               Eliminar cuenta
@@ -268,7 +268,7 @@ export default function SettingsContent() {
           </div>
           <button
             type="button"
-            className="btn-danger w-auto px-5 lg:w-full"
+            className="btn-danger"
             onClick={() => {
               setDeleteOpen(true);
               setDeleteConfirmation("");

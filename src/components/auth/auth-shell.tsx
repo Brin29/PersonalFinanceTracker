@@ -39,16 +39,9 @@ export function AuthShell({ children }: { children: ReactNode }) {
         </p>
       </aside>
 
-      <main className="flex flex-1 flex-col gap-8 p-5 sm:p-10 lg:items-center lg:justify-center lg:p-12">
-        <div className="flex w-full max-w-sm flex-col gap-6 lg:hidden">
+      <main className="flex flex-1 flex-col items-center justify-center gap-6 p-5 sm:p-10 lg:p-12">
+        <div className="flex w-full max-w-sm flex-col items-center gap-6 lg:hidden">
           <Brand />
-          <Suspense
-            fallback={
-              <div className="h-64 animate-pulse rounded-2xl bg-surface" />
-            }
-          >
-            <BalanceCard compact mock />
-          </Suspense>
         </div>
         <div className="auth-card">{children}</div>
       </main>

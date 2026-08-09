@@ -12,7 +12,9 @@ vi.mock("@/lib/api/client", () => ({
 import { apiClient } from "@/lib/api/client";
 import type { User } from "@/lib/types/auth";
 import {
+  checkEmail,
   deleteAccount,
+  generateMagicLink,
   getProfile,
   login,
   logout,
@@ -21,6 +23,7 @@ import {
   updateProfile,
   uploadAvatar,
   verifyCode,
+  verifyMagicToken,
 } from "@/services/auth";
 
 const mockedPost = vi.mocked(apiClient.post);
@@ -166,5 +169,47 @@ describe("auth service", () => {
       code: "ACCOUNT_DELETED",
       message: "cuenta eliminada",
     });
+  });
+
+  it("checkEmail envía el email a /auth/check-email", async () => {
+    mockedPost.mockResolvedValueOnce(
+      mockResponse({ code: "EMAIL_CHECKED", message: "ok", exists: true }),
+    );
+
+    const result = await checkEmail({ email: "ana@correo.com" });
+
+    expect(mockedPost).toHaveBeenCalledWith("/auth/check-email", {
+      data: { email: "ana@correo.com" },
+    });
+    expect(result.exists).toBe(true);
+  });
+
+  it("generateMagicLink envía el email a /auth/magic-link-generate", async () => {
+    mockedPost.mockResolvedValueOnce(
+      mockResponse({ code: "MAGIC_LINK_SENT", message: "enlace enviado" }),
+    );
+
+    const result = await generateMagicLink({ email: "ana@correo.com" });
+
+    expect(mockedPost).toHaveBeenCalledWith("/auth/magic-link-generate", {
+      data: { email: "ana@correo.com" },
+    });
+    expect(result.code).toBe("MAGIC_LINK_SENT");
+  });
+
+  it("verifyMagicToken envía el token a /auth/verify-magic-token", async () => {
+    const magicResponse = {
+      code: "MAGIC_LOGIN_SUCCESS",
+      message: "ok",
+      user: mockUser,
+    };
+    mockedPost.mockResolvedValueOnce(mockResponse(magicResponse));
+
+    const result = await verifyMagicToken("raw-token");
+
+    expect(mockedPost).toHaveBeenCalledWith("/auth/verify-magic-token", {
+      data: { magic_token: "raw-token" },
+    });
+    expect(result).toEqual(magicResponse);
   });
 });

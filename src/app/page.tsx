@@ -7,6 +7,7 @@ import DashboardIcon from "@/components/ui/icons/dashboardIcon";
 import TransferIcon from "@/components/ui/icons/transferIcon";
 import TagIcon from "@/components/ui/icons/tagIcon";
 import { BalanceCard } from "@/components/auth/balance-card";
+import { HomeHeader } from "@/components/auth/home-header";
 
 export const metadata: Metadata = {
   title: "Finanzas personales en un solo lugar",
@@ -97,23 +98,11 @@ export default async function HomePage() {
       />
 
       <div className="flex min-h-dvh flex-col">
-        <header className="fixed mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-5 sm:px-6">
-          <div className="flex items-center gap-2.5">
-            <span className="flex size-7 items-center justify-center rounded-md bg-leaf-600 font-mono text-xs font-bold text-white">
-              F
-            </span>
-            <span className="font-mono text-sm font-semibold uppercase tracking-[0.25em] text-ink">
-              Finance
-            </span>
-          </div>
-          <Link href="/register" className="btn-primary sm:w-auto sm:px-7">
-            Iniciar sesión
-          </Link>
-        </header>
+        <HomeHeader />
 
-        <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 sm:px-6">
-          <section className="flex items-center justify-between">
-            <div className="flex flex-col items-start gap-6 py-12 sm:py-20">
+        <main className="mx-auto flex w-full mt-12 max-w-5xl flex-1 flex-col px-4 sm:px-6">
+          <section className="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-col items-center gap-6 py-12 text-center sm:py-20 lg:items-start lg:text-left">
               <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-ink-soft">
                 Finanzas personales · sin complicaciones
               </p>
@@ -142,7 +131,7 @@ export default async function HomePage() {
                 Gratis para siempre · Sin tarjeta · Tus datos son privados
               </p>
             </div>
-            <div className="w-md">
+            <div className="w-full lg:w-md">
               <Suspense
                 fallback={
                   <div className="h-80 animate-pulse rounded-2xl bg-surface" />
@@ -155,7 +144,7 @@ export default async function HomePage() {
 
           <section
             aria-label="Características"
-            className="grid gap-3 pb-12 sm:grid-cols-3 sm:pb-20"
+            className="grid gap-3 py-12 sm:grid-cols-3 sm:pb-20"
           >
             {FEATURES.map((feature) => (
               <FeatureCard
@@ -169,13 +158,13 @@ export default async function HomePage() {
 
           <section
             aria-label="Empieza hoy"
-            className="mb-12 flex flex-col items-start gap-5 rounded-2xl bg-ink p-6 text-paper sm:mb-20 sm:flex-row sm:items-center sm:justify-between sm:p-10"
+            className="mb-12 flex flex-col items-start gap-5 rounded-2xl bg-ink p-6 text-paper sm:mb-20 sm:flex-row sm:items-center sm:justify-between sm:p-10 dark:bg-[#18221d] dark:text-ink"
           >
             <div>
               <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
                 Empieza a llevar el control hoy
               </h2>
-              <p className="mt-1.5 text-sm text-paper/70">
+              <p className="mt-1.5 text-sm text-paper/70 dark:text-ink/70">
                 Crea tu cuenta gratis y ten tu dinero siempre al día.
               </p>
             </div>

@@ -131,7 +131,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           <UserAvatar user={user} size="sm" />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold">
-              {user ? `${user.firstName} ${user.lastName}` : "Cargando…"}
+              {user ? `${user.firstName} ${user.lastName}` : ""}
             </p>
             <p className="truncate text-xs text-paper/50 dark:text-ink/50">
               {user?.email ?? "…"}

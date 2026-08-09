@@ -16,7 +16,7 @@ const SIZE_CLASSES = {
 type AvatarSize = keyof typeof SIZE_CLASSES;
 
 export function getInitials(user?: User): string {
-  if (!user) return "?";
+  if (!user) return " ";
   const first = user.firstName?.charAt(0) ?? "";
   const last = user.lastName?.charAt(0) ?? "";
   return (first + last).toUpperCase() || user.email.charAt(0).toUpperCase();
