@@ -63,13 +63,7 @@ export function CategoryRow({
             {category.name}
           </button>
         )}
-        <p className="mt-0.5 truncate text-xs text-ink-soft">{category.key}</p>
       </div>
-      {category.isSystem ? (
-        <span className="shrink-0 rounded-full bg-ink/5 px-2.5 py-1 text-xs font-medium text-ink-soft">
-          Sistema
-        </span>
-      ) : null}
       <div className="flex shrink-0 items-center gap-1">
         <button
           type="button"

@@ -93,8 +93,13 @@ export function CategoryList() {
     const trimmed = newName.trim();
     if (!trimmed || create.isPending) return;
     try {
-      await create.mutateAsync({ name: trimmed, type: newType });
+      const response = await create.mutateAsync({ name: trimmed, type: newType });
       setNewName("");
+      setFeedback({
+        tone: "success",
+        title: "Categoría creada",
+        message: getMutationSuccessMessage(response.code),
+      });
     } catch (error) {
       setFeedback({
         tone: "error",
