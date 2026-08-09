@@ -6,8 +6,6 @@ export function proxy(request: NextRequest) {
   const hasAccessToken = request.cookies.has("access_token");
 
   const pathname = request.nextUrl.pathname;
-
-
   
   const isAuthRoute =
   pathname.startsWith("/login") ||
@@ -19,26 +17,26 @@ export function proxy(request: NextRequest) {
   pathname.startsWith("/categories") ||
   pathname.startsWith("/profile") ||
   pathname.startsWith("/settings");
-  
+
   console.log(hasRefreshToken);
   console.log(hasAccessToken);
   
-  if (!hasRefreshToken && isProtectedRoute) {
-    const loginUrl = new URL("/login", request.url);
-    const destination = pathname + request.nextUrl.search;
-    if (destination !== "/") {
-      loginUrl.searchParams.set("from", destination);
-    }
-    return NextResponse.redirect(loginUrl);
-  }
+  // if (!hasRefreshToken && isProtectedRoute) {
+  //   const loginUrl = new URL("/login", request.url);
+  //   const destination = pathname + request.nextUrl.search;
+  //   if (destination !== "/") {
+  //     loginUrl.searchParams.set("from", destination);
+  //   }
+  //   return NextResponse.redirect(loginUrl);
+  // }
 
-  if (hasRefreshToken && pathname === "/") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
+  // if (hasRefreshToken && pathname === "/") {
+  //   return NextResponse.redirect(new URL("/dashboard", request.url));
+  // }
 
-  if (hasRefreshToken && isAuthRoute) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
+  // if (hasRefreshToken && isAuthRoute) {
+  //   return NextResponse.redirect(new URL("/dashboard", request.url));
+  // }
 
   return NextResponse.next();
 }
