@@ -7,7 +7,6 @@ import DashboardIcon from "@/components/ui/icons/dashboardIcon";
 import TransferIcon from "@/components/ui/icons/transferIcon";
 import TagIcon from "@/components/ui/icons/tagIcon";
 import { BalanceCard } from "@/components/auth/balance-card";
-import { HomeHeader } from "@/components/auth/home-header";
 
 export const metadata: Metadata = {
   title: "Finanzas personales en un solo lugar",
@@ -98,9 +97,7 @@ export default async function HomePage() {
       />
 
       <div className="flex min-h-dvh flex-col">
-        <HomeHeader />
-
-        <main className="mx-auto flex w-full mt-12 max-w-5xl flex-1 flex-col px-4 sm:px-6">
+        <main className="mx-auto flex w-full mt-24 max-w-5xl flex-1 flex-col px-4 sm:px-6">
           <section className="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-col items-center gap-6 py-12 text-center sm:py-20 lg:items-start lg:text-left">
               <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-ink-soft">
@@ -176,28 +173,6 @@ export default async function HomePage() {
             </Link>
           </section>
         </main>
-
-        <footer className="border-t border-line">
-          <div className="mx-auto flex w-full max-w-5xl flex-col items-start justify-between gap-3 px-4 py-6 sm:flex-row sm:items-center sm:px-6">
-            <p className="text-xs text-ink-soft">
-              © {new Date().getFullYear()} Finance · Finanzas personales
-            </p>
-            <nav className="flex gap-4" aria-label="Enlaces">
-              <Link
-                href="/login"
-                className="text-xs font-semibold text-ink-soft transition-colors hover:text-leaf-600"
-              >
-                Iniciar sesión
-              </Link>
-              <Link
-                href="/register"
-                className="text-xs font-semibold text-ink-soft transition-colors hover:text-leaf-600"
-              >
-                Registro
-              </Link>
-            </nav>
-          </div>
-        </footer>
       </div>
     </>
   );
