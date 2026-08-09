@@ -12,6 +12,24 @@ export const metadata: Metadata = {
   title: "Finanzas personales en un solo lugar",
   description:
     "Finance es una aplicación gratuita para registrar tus ingresos y gastos, visualizar tu balance y mantener tus finanzas personales al día.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "es_ES",
+    url: "/",
+    siteName: "Finance",
+    title: "Finanzas personales en un solo lugar",
+    description:
+      "Registra tus ingresos y gastos, visualiza tu balance y mantén tus finanzas personales al día con Finance.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Finance · Finanzas personales en un solo lugar",
+    description:
+      "Registra tus ingresos y gastos, visualiza tu balance y mantén tus finanzas personales al día con Finance.",
+  },
 };
 
 const FEATURES = [

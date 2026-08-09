@@ -35,6 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "es_ES",
+    images: "",
     url: "/",
     siteName: "Finance",
     title: "Finance · Finanzas personales",
