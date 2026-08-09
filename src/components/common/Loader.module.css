@@ -1,5 +1,6 @@
 .box {
   transform-origin: 50% 50%;
+  fill: var(--ink-soft)
 }
 
 .overlay {
@@ -18,7 +19,7 @@
 }
  
 
-.box1 { animation: box-1 4s infinite; fill: red; }
+.box1 { animation: box-1 4s infinite; }
 .box2 { animation: box-2 4s infinite; }
 .box3 { animation: box-3 4s infinite; }
 .box4 { animation: box-4 4s infinite; }

@@ -12,6 +12,7 @@ import {
 } from "@/hooks/transactions/useTransactionUrlFilters";
 import { BalanceCard } from "@/components/auth/balance-card";
 import { TransactionList } from "@/components/transactions/transaction-list";
+import { StatCard } from "@/components/dashboard/stat-card";
 import { formatCurrency } from "@/lib/utils/format";
 import ArrowUpIcon from "@/components/ui/icons/arrowUpIcon";
 import ArrowDownIcon from "@/components/ui/icons/arrowDownIcon";
@@ -93,35 +94,17 @@ export default function DashboardContent() {
         className="grid gap-3 sm:grid-cols-3"
         aria-label="Resumen de finanzas"
       >
-        {stats.map((stat) => {
-          const StatIcon = stat.icon;
-          return (
-            <div
-              key={stat.label}
-              className="rounded-2xl border border-line bg-surface p-5"
-            >
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-soft">
-                {stat.label}
-              </p>
-              {summary ? (
-                <p className="mt-2 font-mono text-2xl font-semibold tracking-tight text-ink">
-                  {stat.amount}
-                </p>
-              ) : (
-                <div
-                  className="mt-2.5 h-8 w-24 animate-pulse rounded bg-ink/5 dark:bg-white/10"
-                  aria-hidden="true"
-                />
-              )}
-              <p
-                className={`mt-2 flex items-center gap-1.5 text-xs font-medium ${stat.tone}`}
-              >
-                <StatIcon size={14} />
-                {summary ? PERIOD_LABELS[period] : "cargando…"}
-              </p>
-            </div>
-          );
-        })}
+        {stats.map((stat) => (
+          <StatCard
+            key={stat.label}
+            label={stat.label}
+            amount={stat.amount}
+            tone={stat.tone}
+            icon={stat.icon}
+            isLoading={!summary}
+            periodLabel={PERIOD_LABELS[period]}
+          />
+        ))}
       </section>
 
       <section

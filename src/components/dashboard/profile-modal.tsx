@@ -38,7 +38,7 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ProfileFormValues>({
-    mode: "onTouched",
+    mode: "onChange",
   });
 
   useEffect(() => {

@@ -10,6 +10,7 @@ import { useUpdateTransaction } from "@/hooks/transactions/mutations/useUpdateTr
 import { useParamsOptions } from "@/hooks/params/useParamsOptions";
 import { getApiErrorMessage } from "@/lib/api/errors";
 import { toDateInputValue } from "@/lib/utils/format";
+import type { ParamOption } from "@/lib/types/params";
 import type {
   Transaction,
   TransactionCategory,
@@ -33,6 +34,43 @@ interface TransactionFormValues {
 
 const AMOUNT_PATTERN = /^\d+([.,]\d{1,2})?$/;
 
+interface TypeSelectorProps {
+  types: ParamOption[];
+  selectedType: TransactionType;
+  onChange: (type: TransactionType) => void;
+}
+
+function TypeSelector({ types, selectedType, onChange }: TypeSelectorProps) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <span className="field-label">Tipo</span>
+      <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Tipo">
+        {types.map((type) => {
+          const active = selectedType === type.value;
+          return (
+            <button
+              key={type.value}
+              type="button"
+              role="radio"
+              aria-checked={active}
+              onClick={() => onChange(type.value as TransactionType)}
+              className={`h-11 rounded-lg border text-sm font-semibold transition-colors ${
+                active
+                  ? type.value === "income"
+                    ? "border-leaf-600 bg-leaf-50 text-leaf-700"
+                    : "border-gold-500 bg-gold-500/10 text-ink"
+                  : "border-line bg-surface text-ink-soft hover:bg-ink/5"
+              }`}
+            >
+              {type.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function TransactionForm({
   open,
   onClose,
@@ -52,7 +90,7 @@ export function TransactionForm({
     control,
     formState: { errors, isSubmitting },
   } = useForm<TransactionFormValues>({
-    mode: "onTouched",
+    mode: "onChange",
   });
 
   useEffect(() => {
@@ -156,34 +194,11 @@ export function TransactionForm({
         onSubmit={handleSubmit(onSubmit)}
         noValidate
       >
-        <div className="flex flex-col gap-1.5">
-          <span className="field-label">Tipo</span>
-          <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Tipo">
-            {types.map((type) => {
-              const active = selectedType === type.value;
-              return (
-                <button
-                  key={type.value}
-                  type="button"
-                  role="radio"
-                  aria-checked={active}
-                  onClick={() =>
-                    handleTypeChange(type.value as TransactionType)
-                  }
-                  className={`h-11 rounded-lg border text-sm font-semibold transition-colors ${
-                    active
-                      ? type.value === "income"
-                        ? "border-leaf-600 bg-leaf-50 text-leaf-700"
-                        : "border-gold-500 bg-gold-500/10 text-ink"
-                      : "border-line bg-surface text-ink-soft hover:bg-ink/5"
-                  }`}
-                >
-                  {type.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <TypeSelector
+          types={types}
+          selectedType={selectedType}
+          onChange={handleTypeChange}
+        />
 
         <Field
           id="title"

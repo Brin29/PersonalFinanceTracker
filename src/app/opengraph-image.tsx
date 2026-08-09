@@ -4,6 +4,26 @@ export const alt = "Finance — Finanzas personales";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+const OG_LABELS = ["Ingresos", "Gastos", "Balance", "Categorías"];
+
+function FeatureStat({ label }: { label: string }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        padding: "12px 24px",
+        borderRadius: 999,
+        backgroundColor: "#ffffff",
+        border: "1px solid #e3e1d5",
+        fontSize: 18,
+        color: "#51655b",
+      }}
+    >
+      {label}
+    </div>
+  );
+}
+
 export default function OpenGraphImage() {
   return new ImageResponse(
     (
@@ -77,21 +97,8 @@ export default function OpenGraphImage() {
         </div>
 
         <div style={{ display: "flex", gap: 16 }}>
-          {["Ingresos", "Gastos", "Balance", "Categorías"].map((label) => (
-            <div
-              key={label}
-              style={{
-                display: "flex",
-                padding: "12px 24px",
-                borderRadius: 999,
-                backgroundColor: "#ffffff",
-                border: "1px solid #e3e1d5",
-                fontSize: 18,
-                color: "#51655b",
-              }}
-            >
-              {label}
-            </div>
+          {OG_LABELS.map((label) => (
+            <FeatureStat key={label} label={label} />
           ))}
         </div>
       </div>

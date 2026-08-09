@@ -24,9 +24,9 @@ export function useRegisterFlow() {
   const [verificationToken, setVerificationToken] = useState("");
   const [feedback, setFeedback] = useState<FeedbackInfo | null>(null);
 
-  const emailForm = useForm<EmailStepValues>({ mode: "onTouched" });
-  const codeForm = useForm<CodeStepValues>({ mode: "onTouched" });
-  const registerForm = useForm<RegisterStepValues>({ mode: "onTouched" });
+  const emailForm = useForm<EmailStepValues>({ mode: "onChange" });
+  const codeForm = useForm<CodeStepValues>({ mode: "onChange" });
+  const registerForm = useForm<RegisterStepValues>({ mode: "onChange" });
 
     const submittedCode = useWatch({
       control: codeForm.control,

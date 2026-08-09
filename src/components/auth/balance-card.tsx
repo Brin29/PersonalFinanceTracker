@@ -183,6 +183,290 @@ const FILTER_OPTIONS: Array<{ value: ChartTypeFilter | null; label: string }> =
     { value: "expense", label: "Gastos" },
   ];
 
+interface RangeOptionButtonProps {
+  option: (typeof RANGE_OPTIONS)[number];
+  active: boolean;
+  onClick: () => void;
+}
+
+function RangeOptionButton({ option, active, onClick }: RangeOptionButtonProps) {
+  return (
+    <button
+      type="button"
+      className={`rounded-md px-2.5 py-1 font-mono text-[11px] font-semibold transition-colors ${
+        active
+          ? "bg-white/15 text-paper dark:bg-white/10 dark:text-ink"
+          : "text-paper/50 hover:text-paper dark:text-ink/50 dark:hover:text-ink"
+      }`}
+      aria-pressed={active}
+      onClick={onClick}
+    >
+      {option.label}
+    </button>
+  );
+}
+
+interface ChartRangeOptionsProps {
+  range: ChartRange;
+  onRangeChange: (range: ChartRange) => void;
+}
+
+function ChartRangeOptions({ range, onRangeChange }: ChartRangeOptionsProps) {
+  return (
+    <div
+      className="flex rounded-lg border border-paper/15 p-0.5 dark:border-ink/15"
+      role="group"
+      aria-label="Periodo de la gráfica"
+    >
+      {RANGE_OPTIONS.map((option) => (
+        <RangeOptionButton
+          key={option.value}
+          option={option}
+          active={range === option.value}
+          onClick={() => onRangeChange(option.value)}
+        />
+      ))}
+    </div>
+  );
+}
+
+interface FilterOptionButtonProps {
+  option: (typeof FILTER_OPTIONS)[number];
+  active: boolean;
+  onClick: () => void;
+}
+
+function FilterOptionButton({ option, active, onClick }: FilterOptionButtonProps) {
+  return (
+    <button
+      type="button"
+      className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+        active
+          ? "bg-white/15 text-paper dark:bg-white/10 dark:text-ink"
+          : "text-paper/50 hover:text-paper dark:text-ink/50 dark:hover:text-ink"
+      }`}
+      aria-pressed={active}
+      onClick={onClick}
+    >
+      {option.label}
+    </button>
+  );
+}
+
+interface ChartFilterOptionsProps {
+  chartType: ChartTypeFilter | null;
+  onChartTypeChange: (type: ChartTypeFilter | null) => void;
+}
+
+function ChartFilterOptions({
+  chartType,
+  onChartTypeChange,
+}: ChartFilterOptionsProps) {
+  return (
+    <div
+      className="flex rounded-lg border border-paper/15 p-0.5 dark:border-ink/15"
+      role="group"
+      aria-label="Filtrar gráfica"
+    >
+      {FILTER_OPTIONS.map((option) => (
+        <FilterOptionButton
+          key={option.label}
+          option={option}
+          active={chartType === option.value}
+          onClick={() => onChartTypeChange(option.value)}
+        />
+      ))}
+    </div>
+  );
+}
+
+interface GridLineProps {
+  step: number;
+  y: number;
+  value: number;
+  x1: number;
+  x2: number;
+}
+
+function GridLine({ step, y, value, x1, x2 }: GridLineProps) {
+  return (
+    <g>
+      <line
+        x1={x1}
+        x2={x2}
+        y1={y}
+        y2={y}
+        stroke="rgba(255,255,255,0.12)"
+        strokeWidth="1"
+        strokeDasharray={step === 0 ? undefined : "3 4"}
+      />
+      <text
+        x={x2 + 6}
+        y={y + 3}
+        textAnchor="start"
+        className="fill-paper/40 dark:fill-ink/40"
+        style={{ fontSize: 10, fontFamily: "var(--font-mono)" }}
+      >
+        {step === 0 ? "0" : formatCompactCurrency(value)}
+      </text>
+    </g>
+  );
+}
+
+interface ChartGridLinesProps {
+  gridSteps: number[];
+  padding: { top: number; right: number; bottom: number; left: number };
+  viewWidth: number;
+  scaleMax: number;
+  plotHeight: number;
+}
+
+function ChartGridLines({
+  gridSteps,
+  padding,
+  viewWidth,
+  scaleMax,
+  plotHeight,
+}: ChartGridLinesProps) {
+  return (
+    <>
+      {gridSteps.map((step) => (
+        <GridLine
+          key={step}
+          step={step}
+          y={padding.top + plotHeight * (1 - step)}
+          value={scaleMax * step}
+          x1={padding.left}
+          x2={viewWidth - padding.right}
+        />
+      ))}
+    </>
+  );
+}
+
+interface ChartPointProps {
+  cx: number;
+  cy: number;
+  color: string;
+  tooltip: string;
+}
+
+function ChartPoint({ cx, cy, color, tooltip }: ChartPointProps) {
+  return (
+    <circle cx={cx} cy={cy} r="3" fill={color}>
+      <title>{tooltip}</title>
+    </circle>
+  );
+}
+
+interface ChartSeriesGroupProps {
+  series: Array<{
+    type: "income" | "expense";
+    color: string;
+    label: string;
+  }>;
+  points: ChartPoint[];
+  mock: boolean;
+  xFor: (index: number) => number;
+  yFor: (value: number) => number;
+  tooltipLabel: (point: ChartPoint) => string;
+}
+
+function ChartSeriesGroup({
+  series,
+  points,
+  mock,
+  xFor,
+  yFor,
+  tooltipLabel,
+}: ChartSeriesGroupProps) {
+  return (
+    <>
+      {series.map(({ type, color, label }) => (
+        <g key={type}>
+          <polyline
+            points={points
+              .map((point, index) => `${xFor(index)},${yFor(point[type])}`)
+              .join(" ")}
+            fill="none"
+            stroke={color}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={mock ? "mock-chart-line" : undefined}
+          />
+          {mock ? (
+            <polyline
+              points={points
+                .map((point, index) => `${xFor(index)},${yFor(point[type])}`)
+                .join(" ")}
+              fill="none"
+              stroke={color}
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity="0.9"
+              className="mock-chart-flow"
+            />
+          ) : null}
+          {points.map((point, index) => (
+            <ChartPoint
+              key={point.key}
+              cx={xFor(index)}
+              cy={yFor(point[type])}
+              color={color}
+              tooltip={`${tooltipLabel(point)} — ${label}: ${formatCurrency(point[type])}`}
+            />
+          ))}
+        </g>
+      ))}
+    </>
+  );
+}
+
+interface XAxisLabelProps {
+  x: number;
+  y: number;
+  label: string;
+}
+
+function XAxisLabel({ x, y, label }: XAxisLabelProps) {
+  return (
+    <text
+      x={x}
+      y={y}
+      textAnchor="middle"
+      className="fill-paper/40 dark:fill-ink/40"
+      style={{ fontSize: 10, fontFamily: "var(--font-mono)" }}
+    >
+      {label}
+    </text>
+  );
+}
+
+interface ChartXLabelsProps {
+  points: ChartPoint[];
+  xFor: (index: number) => number;
+  y: number;
+  isDaily: boolean;
+}
+
+function ChartXLabels({ points, xFor, y, isDaily }: ChartXLabelsProps) {
+  return (
+    <>
+      {points.map((point, index) =>
+        isDaily
+          ? index % 5 === 0 || index === points.length - 1 ? (
+              <XAxisLabel key={point.key} x={xFor(index)} y={y} label={point.label} />
+            ) : null
+          : (
+              <XAxisLabel key={point.key} x={xFor(index)} y={y} label={point.label} />
+            ),
+      )}
+    </>
+  );
+}
+
 function BalanceCardChart({
   byMonth,
   byDay,
@@ -263,11 +547,6 @@ function BalanceCardChart({
 
   const gridSteps = [0, 0.25, 0.5, 0.75, 1];
 
-  const showXLabel = (index: number) =>
-    isDaily
-      ? index % 5 === 0 || index === points.length - 1
-      : true;
-
   const tooltipLabel = (point: ChartPoint) =>
     isDaily
       ? DAY_TOOLTIP_LABEL.format(point.date)
@@ -281,55 +560,11 @@ function BalanceCardChart({
         </p>
         {mock ? null : (
           <div className="flex flex-wrap items-center gap-2">
-          <div
-            className="flex rounded-lg border border-paper/15 p-0.5 dark:border-ink/15"
-            role="group"
-            aria-label="Periodo de la gráfica"
-          >
-            {RANGE_OPTIONS.map((option) => {
-              const active = range === option.value;
-              return (
-                <button
-                  key={option.value}
-                  type="button"
-                  className={`rounded-md px-2.5 py-1 font-mono text-[11px] font-semibold transition-colors ${
-                    active
-                      ? "bg-white/15 text-paper dark:bg-white/10 dark:text-ink"
-                      : "text-paper/50 hover:text-paper dark:text-ink/50 dark:hover:text-ink"
-                  }`}
-                  aria-pressed={active}
-                  onClick={() => setRange(option.value)}
-                >
-                  {option.label}
-                </button>
-              );
-            })}
-          </div>
-
-          <div
-            className="flex rounded-lg border border-paper/15 p-0.5 dark:border-ink/15"
-            role="group"
-            aria-label="Filtrar gráfica"
-          >
-            {FILTER_OPTIONS.map((option) => {
-              const active = chartType === option.value;
-              return (
-                <button
-                  key={option.label}
-                  type="button"
-                  className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition-colors ${
-                    active
-                      ? "bg-white/15 text-paper dark:bg-white/10 dark:text-ink"
-                      : "text-paper/50 hover:text-paper dark:text-ink/50 dark:hover:text-ink"
-                  }`}
-                  aria-pressed={active}
-                  onClick={() => setChartType(option.value)}
-                >
-                  {option.label}
-                </button>
-              );
-            })}
-          </div>
+            <ChartRangeOptions range={range} onRangeChange={setRange} />
+            <ChartFilterOptions
+              chartType={chartType}
+              onChartTypeChange={setChartType}
+            />
           </div>
         )}
       </div>
@@ -341,89 +576,29 @@ function BalanceCardChart({
         role="img"
         aria-label={`Gráfica de líneas de ingresos y gastos — ${rangeLabel}`}
       >
-        {gridSteps.map((step) => {
-          const y = padding.top + plotHeight * (1 - step);
-          const value = scaleMax * step;
-          return (
-            <g key={step}>
-              <line
-                x1={padding.left}
-                x2={viewWidth - padding.right}
-                y1={y}
-                y2={y}
-                stroke="rgba(255,255,255,0.12)"
-                strokeWidth="1"
-                strokeDasharray={step === 0 ? undefined : "3 4"}
-              />
-              <text
-                x={viewWidth - padding.right + 6}
-                y={y + 3}
-                textAnchor="start"
-                className="fill-paper/40 dark:fill-ink/40"
-                style={{ fontSize: 10, fontFamily: "var(--font-mono)" }}
-              >
-                {step === 0 ? "0" : formatCompactCurrency(value)}
-              </text>
-            </g>
-          );
-        })}
+        <ChartGridLines
+          gridSteps={gridSteps}
+          padding={padding}
+          viewWidth={viewWidth}
+          scaleMax={scaleMax}
+          plotHeight={plotHeight}
+        />
 
+        <ChartSeriesGroup
+          series={series}
+          points={points}
+          mock={mock}
+          xFor={xFor}
+          yFor={yFor}
+          tooltipLabel={tooltipLabel}
+        />
 
-        {series.map(({ type, color, label }) => (
-          <g key={type}>
-            <polyline
-              points={points
-                .map((point, index) => `${xFor(index)},${yFor(point[type])}`)
-                .join(" ")}
-              fill="none"
-              stroke={color}
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className={mock ? "mock-chart-line" : undefined}
-            />
-            {mock ? (
-              <polyline
-                points={points
-                  .map((point, index) => `${xFor(index)},${yFor(point[type])}`)
-                  .join(" ")}
-                fill="none"
-                stroke={color}
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                opacity="0.9"
-                className="mock-chart-flow"
-              />
-            ) : null}
-            {points.map((point, index) => (
-              <circle
-                key={point.key}
-                cx={xFor(index)}
-                cy={yFor(point[type])}
-                r="3"
-                fill={color}
-              >
-                <title>{`${tooltipLabel(point)} — ${label}: ${formatCurrency(point[type])}`}</title>
-              </circle>
-            ))}
-          </g>
-        ))}
-
-        {points.map((point, index) =>
-          showXLabel(index) ? (
-            <text
-              key={point.key}
-              x={xFor(index)}
-              y={viewHeight - 8}
-              textAnchor="middle"
-              className="fill-paper/40 dark:fill-ink/40"
-              style={{ fontSize: 10, fontFamily: "var(--font-mono)" }}
-            >
-              {point.label}
-            </text>
-          ) : null,
-        )}
+        <ChartXLabels
+          points={points}
+          xFor={xFor}
+          y={viewHeight - 8}
+          isDaily={isDaily}
+        />
       </svg>
     </div>
   );

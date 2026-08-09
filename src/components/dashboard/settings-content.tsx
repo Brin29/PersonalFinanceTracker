@@ -41,7 +41,7 @@ export default function SettingsContent() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ProfileFormValues>({
-    mode: "onTouched",
+    mode: "onChange",
   });
 
   useEffect(() => {

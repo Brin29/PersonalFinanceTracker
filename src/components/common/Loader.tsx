@@ -21,6 +21,25 @@ interface LoadingIconProps {
   size?: number;
 }
 
+interface LoaderBoxProps {
+  x: number;
+  y: number;
+  boxClass: string;
+}
+
+function LoaderBox({ x, y, boxClass }: LoaderBoxProps) {
+  return (
+    <rect
+      className={`${styles.box} ${boxClass}`}
+      x={x}
+      y={y}
+      rx={1}
+      width={10}
+      height={10}
+    />
+  );
+}
+
 export default function Loader({ className, size = 90 }: LoadingIconProps) {
   const loading = useAppSelector(selectIsLoading);
 
@@ -41,15 +60,7 @@ export default function Loader({ className, size = 90 }: LoadingIconProps) {
       >
         <g>
           {BOX_POSITIONS.map((box, i) => (
-            <rect
-              key={i}
-              className={`${styles.box} ${box.className}`}
-              x={box.x}
-              y={box.y}
-              rx={1}
-              width={10}
-              height={10}
-            />
+            <LoaderBox key={i} x={box.x} y={box.y} boxClass={box.className} />
           ))}
         </g>
       </svg>

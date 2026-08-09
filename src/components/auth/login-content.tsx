@@ -27,7 +27,7 @@ export default function LoginContent() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<LoginInput>({
-    mode: "onTouched",
+    mode: "onChange",
   });
 
   const onSubmit: SubmitHandler<LoginInput> = async (data) => {

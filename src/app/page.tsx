@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, type ComponentType } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import DashboardIcon from "@/components/ui/icons/dashboardIcon";
@@ -34,6 +34,28 @@ const FEATURES = [
       "Etiqueta cada movimiento para entender a dónde va tu dinero y tomar mejores decisiones.",
   },
 ];
+
+interface FeatureCardProps {
+  icon: ComponentType<{ size?: number }>;
+  title: string;
+  description: string;
+}
+
+function FeatureCard({ icon: Icon, title, description }: FeatureCardProps) {
+  return (
+    <div className="rounded-2xl border border-line bg-surface p-5">
+      <span className="flex size-9 items-center justify-center rounded-lg bg-leaf-50 text-leaf-600">
+        <Icon size={18} />
+      </span>
+      <h2 className="mt-4 text-base font-semibold tracking-tight text-ink">
+        {title}
+      </h2>
+      <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
+        {description}
+      </p>
+    </div>
+  );
+}
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -141,25 +163,14 @@ export default async function HomePage() {
             aria-label="Características"
             className="grid gap-3 pb-12 sm:grid-cols-3 sm:pb-20"
           >
-            {FEATURES.map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <div
-                  key={feature.title}
-                  className="rounded-2xl border border-line bg-surface p-5"
-                >
-                  <span className="flex size-9 items-center justify-center rounded-lg bg-leaf-50 text-leaf-600">
-                    <Icon size={18} />
-                  </span>
-                  <h2 className="mt-4 text-base font-semibold tracking-tight text-ink">
-                    {feature.title}
-                  </h2>
-                  <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
-                    {feature.description}
-                  </p>
-                </div>
-              );
-            })}
+            {FEATURES.map((feature) => (
+              <FeatureCard
+                key={feature.title}
+                icon={feature.icon}
+                title={feature.title}
+                description={feature.description}
+              />
+            ))}
           </section>
 
           <section
