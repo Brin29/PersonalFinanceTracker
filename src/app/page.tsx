@@ -1,0 +1,194 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import DashboardIcon from "@/components/ui/icons/dashboardIcon";
+import TransferIcon from "@/components/ui/icons/transferIcon";
+import TagIcon from "@/components/ui/icons/tagIcon";
+
+export const metadata: Metadata = {
+  title: "Finanzas personales en un solo lugar",
+  description:
+    "Ledger es una aplicación gratuita para registrar tus ingresos y gastos, visualizar tu balance y mantener tus finanzas personales al día.",
+};
+
+const FEATURES = [
+  {
+    icon: TransferIcon,
+    title: "Registra al instante",
+    description:
+      "Anota ingresos y gastos en segundos. Tu historial queda organizado y siempre disponible.",
+  },
+  {
+    icon: DashboardIcon,
+    title: "Visualiza tu balance",
+    description:
+      "Resumen de ingresos, gastos y balance neto por día o por mes, sin hojas de cálculo.",
+  },
+  {
+    icon: TagIcon,
+    title: "Organiza por categorías",
+    description:
+      "Etiqueta cada movimiento para entender a dónde va tu dinero y tomar mejores decisiones.",
+  },
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      name: "Ledger",
+      url: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+      inLanguage: "es",
+    },
+    {
+      "@type": "SoftwareApplication",
+      name: "Ledger",
+      applicationCategory: "FinanceApplication",
+      operatingSystem: "Web",
+      inLanguage: "es",
+      description:
+        "Aplicación gratuita para registrar tus ingresos y gastos y mantener tus finanzas personales al día.",
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+      },
+    },
+  ],
+};
+
+export default async function HomePage() {
+  const cookieStore = await cookies();
+  if (cookieStore.has("refresh_token")) {
+    redirect("/dashboard");
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <div className="flex min-h-dvh flex-col">
+        <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-5 sm:px-6">
+          <div className="flex items-center gap-2.5">
+            <span className="flex size-7 items-center justify-center rounded-md bg-leaf-600 font-mono text-xs font-bold text-white">
+              L
+            </span>
+            <span className="font-mono text-sm font-semibold uppercase tracking-[0.25em] text-ink">
+              Ledger
+            </span>
+          </div>
+          <Link
+            href="/login"
+            className="text-sm font-semibold text-leaf-600 transition-colors hover:text-leaf-700"
+          >
+            Iniciar sesión
+          </Link>
+        </header>
+
+        <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 sm:px-6">
+          <section className="flex flex-col items-start gap-6 py-12 sm:py-20">
+            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-ink-soft">
+              Finanzas personales · sin complicaciones
+            </p>
+
+            <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
+              Tu dinero,
+              <br />
+              <span className="text-leaf-600">siempre al día.</span>
+            </h1>
+
+            <p className="max-w-md text-base leading-relaxed text-ink-soft">
+              Registra tus ingresos y gastos, y toma el control de tus finanzas
+              desde un solo lugar.
+            </p>
+
+            <div className="flex w-full max-w-sm flex-col gap-3 sm:w-auto sm:flex-row">
+              <Link href="/register" className="btn-primary sm:w-auto sm:px-7">
+                Crear cuenta gratis
+              </Link>
+              <Link href="/login" className="btn-ghost sm:w-auto sm:px-7">
+                Iniciar sesión
+              </Link>
+            </div>
+
+            <p className="text-xs text-ink-soft">
+              Gratis para siempre · Sin tarjeta · Tus datos son privados
+            </p>
+          </section>
+
+          <section
+            aria-label="Características"
+            className="grid gap-3 pb-12 sm:grid-cols-3 sm:pb-20"
+          >
+            {FEATURES.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <div
+                  key={feature.title}
+                  className="rounded-2xl border border-line bg-surface p-5"
+                >
+                  <span className="flex size-9 items-center justify-center rounded-lg bg-leaf-50 text-leaf-600">
+                    <Icon size={18} />
+                  </span>
+                  <h2 className="mt-4 text-base font-semibold tracking-tight text-ink">
+                    {feature.title}
+                  </h2>
+                  <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
+                    {feature.description}
+                  </p>
+                </div>
+              );
+            })}
+          </section>
+
+          <section
+            aria-label="Empieza hoy"
+            className="mb-12 flex flex-col items-start gap-5 rounded-2xl bg-ink p-6 text-paper sm:mb-20 sm:flex-row sm:items-center sm:justify-between sm:p-10"
+          >
+            <div>
+              <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+                Empieza a llevar el control hoy
+              </h2>
+              <p className="mt-1.5 text-sm text-paper/70">
+                Crea tu cuenta gratis y ten tu dinero siempre al día.
+              </p>
+            </div>
+            <Link
+              href="/register"
+              className="inline-flex h-11 items-center justify-center rounded-lg bg-leaf-500 px-7 text-sm font-semibold text-ink transition-colors hover:bg-leaf-500/90"
+            >
+              Crear cuenta gratis
+            </Link>
+          </section>
+        </main>
+
+        <footer className="border-t border-line">
+          <div className="mx-auto flex w-full max-w-5xl flex-col items-start justify-between gap-3 px-4 py-6 sm:flex-row sm:items-center sm:px-6">
+            <p className="text-xs text-ink-soft">
+              © {new Date().getFullYear()} Ledger · Finanzas personales
+            </p>
+            <nav className="flex gap-4" aria-label="Enlaces">
+              <Link
+                href="/login"
+                className="text-xs font-semibold text-ink-soft transition-colors hover:text-leaf-600"
+              >
+                Iniciar sesión
+              </Link>
+              <Link
+                href="/register"
+                className="text-xs font-semibold text-ink-soft transition-colors hover:text-leaf-600"
+              >
+                Registro
+              </Link>
+            </nav>
+          </div>
+        </footer>
+      </div>
+    </>
+  );
+}

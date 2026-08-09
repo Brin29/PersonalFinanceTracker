@@ -1,0 +1,155 @@
+.box {
+  transform-origin: 50% 50%;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--loader-overlay-bg);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000000;
+}
+
+.overlay svg rect:not(.box1) {
+  fill: var(--loader-fg);
+}
+ 
+
+.box1 { animation: box-1 4s infinite; fill: red; }
+.box2 { animation: box-2 4s infinite; }
+.box3 { animation: box-3 4s infinite; }
+.box4 { animation: box-4 4s infinite; }
+.box5 { animation: box-5 4s infinite; }
+.box6 { animation: box-6 4s infinite; }
+.box7 { animation: box-7 4s infinite; }
+.box8 { animation: box-8 4s infinite; }
+.box9 { animation: box-9 4s infinite; }
+
+@keyframes box-1 {
+  9.0909090909%  { transform: translate(-12px, 0); }
+  18.1818181818% { transform: translate(0px, 0); }
+  27.2727272727% { transform: translate(0px, 0); }
+  36.3636363636% { transform: translate(12px, 0); }
+  45.4545454545% { transform: translate(12px, 12px); }
+  54.5454545455% { transform: translate(12px, 12px); }
+  63.6363636364% { transform: translate(12px, 12px); }
+  72.7272727273% { transform: translate(12px, 0px); }
+  81.8181818182% { transform: translate(0px, 0px); }
+  90.9090909091% { transform: translate(-12px, 0px); }
+  100%           { transform: translate(0px, 0px); }
+}
+
+@keyframes box-2 {
+  9.0909090909%  { transform: translate(0, 0); }
+  18.1818181818% { transform: translate(12px, 0); }
+  27.2727272727% { transform: translate(0px, 0); }
+  36.3636363636% { transform: translate(12px, 0); }
+  45.4545454545% { transform: translate(12px, 12px); }
+  54.5454545455% { transform: translate(12px, 12px); }
+  63.6363636364% { transform: translate(12px, 12px); }
+  72.7272727273% { transform: translate(12px, 12px); }
+  81.8181818182% { transform: translate(0px, 12px); }
+  90.9090909091% { transform: translate(0px, 12px); }
+  100%           { transform: translate(0px, 0px); }
+}
+
+@keyframes box-3 {
+  9.0909090909%  { transform: translate(-12px, 0); }
+  18.1818181818% { transform: translate(-12px, 0); }
+  27.2727272727% { transform: translate(0px, 0); }
+  36.3636363636% { transform: translate(-12px, 0); }
+  45.4545454545% { transform: translate(-12px, 0); }
+  54.5454545455% { transform: translate(-12px, 0); }
+  63.6363636364% { transform: translate(-12px, 0); }
+  72.7272727273% { transform: translate(-12px, 0); }
+  81.8181818182% { transform: translate(-12px, -12px); }
+  90.9090909091% { transform: translate(0px, -12px); }
+  100%           { transform: translate(0px, 0px); }
+}
+
+@keyframes box-4 {
+  9.0909090909%  { transform: translate(-12px, 0); }
+  18.1818181818% { transform: translate(-12px, 0); }
+  27.2727272727% { transform: translate(-12px, -12px); }
+  36.3636363636% { transform: translate(0px, -12px); }
+  45.4545454545% { transform: translate(0px, 0px); }
+  54.5454545455% { transform: translate(0px, -12px); }
+  63.6363636364% { transform: translate(0px, -12px); }
+  72.7272727273% { transform: translate(0px, -12px); }
+  81.8181818182% { transform: translate(-12px, -12px); }
+  90.9090909091% { transform: translate(-12px, 0px); }
+  100%           { transform: translate(0px, 0px); }
+}
+
+@keyframes box-5 {
+  9.0909090909%  { transform: translate(0, 0); }
+  18.1818181818% { transform: translate(0, 0); }
+  27.2727272727% { transform: translate(0, 0); }
+  36.3636363636% { transform: translate(12px, 0); }
+  45.4545454545% { transform: translate(12px, 0); }
+  54.5454545455% { transform: translate(12px, 0); }
+  63.6363636364% { transform: translate(12px, 0); }
+  72.7272727273% { transform: translate(12px, 0); }
+  81.8181818182% { transform: translate(12px, -12px); }
+  90.9090909091% { transform: translate(0px, -12px); }
+  100%           { transform: translate(0px, 0px); }
+}
+
+@keyframes box-6 {
+  9.0909090909%  { transform: translate(0, 0); }
+  18.1818181818% { transform: translate(-12px, 0); }
+  27.2727272727% { transform: translate(-12px, 0); }
+  36.3636363636% { transform: translate(0px, 0); }
+  45.4545454545% { transform: translate(0px, 0); }
+  54.5454545455% { transform: translate(0px, 0); }
+  63.6363636364% { transform: translate(0px, 0); }
+  72.7272727273% { transform: translate(0px, 12px); }
+  81.8181818182% { transform: translate(-12px, 12px); }
+  90.9090909091% { transform: translate(-12px, 0px); }
+  100%           { transform: translate(0px, 0px); }
+}
+
+@keyframes box-7 {
+  9.0909090909%  { transform: translate(12px, 0); }
+  18.1818181818% { transform: translate(12px, 0); }
+  27.2727272727% { transform: translate(12px, 0); }
+  36.3636363636% { transform: translate(0px, 0); }
+  45.4545454545% { transform: translate(0px, -12px); }
+  54.5454545455% { transform: translate(12px, -12px); }
+  63.6363636364% { transform: translate(0px, -12px); }
+  72.7272727273% { transform: translate(0px, -12px); }
+  81.8181818182% { transform: translate(0px, 0px); }
+  90.9090909091% { transform: translate(12px, 0px); }
+  100%           { transform: translate(0px, 0px); }
+}
+
+@keyframes box-8 {
+  9.0909090909%  { transform: translate(0, 0); }
+  18.1818181818% { transform: translate(-12px, 0); }
+  27.2727272727% { transform: translate(-12px, -12px); }
+  36.3636363636% { transform: translate(0px, -12px); }
+  45.4545454545% { transform: translate(0px, -12px); }
+  54.5454545455% { transform: translate(0px, -12px); }
+  63.6363636364% { transform: translate(0px, -12px); }
+  72.7272727273% { transform: translate(0px, -12px); }
+  81.8181818182% { transform: translate(12px, -12px); }
+  90.9090909091% { transform: translate(12px, 0px); }
+  100%           { transform: translate(0px, 0px); }
+}
+
+@keyframes box-9 {
+  9.0909090909%  { transform: translate(-12px, 0); }
+  18.1818181818% { transform: translate(-12px, 0); }
+  27.2727272727% { transform: translate(0px, 0); }
+  36.3636363636% { transform: translate(-12px, 0); }
+  45.4545454545% { transform: translate(0px, 0); }
+  54.5454545455% { transform: translate(0px, 0); }
+  63.6363636364% { transform: translate(-12px, 0); }
+  72.7272727273% { transform: translate(-12px, 0); }
+  81.8181818182% { transform: translate(-24px, 0); }
+  90.9090909091% { transform: translate(-12px, 0); }
+  100%           { transform: translate(0px, 0); }
+}
