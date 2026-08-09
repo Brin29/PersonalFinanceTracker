@@ -23,7 +23,7 @@ export default function OAuthSuccessContent() {
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-paper px-6 text-center">
       <span className="flex size-10 items-center justify-center rounded-md bg-leaf-600 font-mono text-sm font-bold text-white">
-        L
+        F
       </span>
       <div className="flex flex-col gap-1.5">
         <p className="text-lg font-semibold tracking-tight text-ink">

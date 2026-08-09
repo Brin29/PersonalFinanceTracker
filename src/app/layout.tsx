@@ -20,8 +20,8 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: "Ledger · Finanzas personales",
-    template: "%s · Ledger",
+    default: "Finance · Finanzas personales",
+    template: "%s · Finance",
   },
   description:
     "Registra tus ingresos y gastos, y mantén tus finanzas personales al día.",
@@ -33,8 +33,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_ES",
     url: "/",
-    siteName: "Ledger",
-    title: "Ledger · Finanzas personales",
+    siteName: "Finance",
+    title: "Finance · Finanzas personales",
     description:
       "Registra tus ingresos y gastos, y mantén tus finanzas personales al día.",
   },

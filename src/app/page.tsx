@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import DashboardIcon from "@/components/ui/icons/dashboardIcon";
 import TransferIcon from "@/components/ui/icons/transferIcon";
 import TagIcon from "@/components/ui/icons/tagIcon";
+import { BalanceCard } from "@/components/auth/balance-card";
 
 export const metadata: Metadata = {
   title: "Finanzas personales en un solo lugar",
   description:
-    "Ledger es una aplicación gratuita para registrar tus ingresos y gastos, visualizar tu balance y mantener tus finanzas personales al día.",
+    "Finance es una aplicación gratuita para registrar tus ingresos y gastos, visualizar tu balance y mantener tus finanzas personales al día.",
 };
 
 const FEATURES = [
@@ -38,13 +40,13 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "WebSite",
-      name: "Ledger",
+      name: "Finance",
       url: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
       inLanguage: "es",
     },
     {
       "@type": "SoftwareApplication",
-      name: "Ledger",
+      name: "Finance",
       applicationCategory: "FinanceApplication",
       operatingSystem: "Web",
       inLanguage: "es",
@@ -61,7 +63,7 @@ const jsonLd = {
 
 export default async function HomePage() {
   const cookieStore = await cookies();
-  if (cookieStore.has("refresh_token")) {
+  if (cookieStore.has("refresh_token") || cookieStore.has("auth_session")) {
     redirect("/dashboard");
   }
 
@@ -76,10 +78,10 @@ export default async function HomePage() {
         <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-5 sm:px-6">
           <div className="flex items-center gap-2.5">
             <span className="flex size-7 items-center justify-center rounded-md bg-leaf-600 font-mono text-xs font-bold text-white">
-              L
+              F
             </span>
             <span className="font-mono text-sm font-semibold uppercase tracking-[0.25em] text-ink">
-              Ledger
+              Finance
             </span>
           </div>
           <Link
@@ -91,34 +93,48 @@ export default async function HomePage() {
         </header>
 
         <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 sm:px-6">
-          <section className="flex flex-col items-start gap-6 py-12 sm:py-20">
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-ink-soft">
-              Finanzas personales · sin complicaciones
-            </p>
+          <section className="flex items-center justify-between">
+            <div className="flex flex-col items-start gap-6 py-12 sm:py-20">
+              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-ink-soft">
+                Finanzas personales · sin complicaciones
+              </p>
 
-            <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
-              Tu dinero,
-              <br />
-              <span className="text-leaf-600">siempre al día.</span>
-            </h1>
+              <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
+                Tu dinero,
+                <br />
+                <span className="text-leaf-600">siempre al día.</span>
+              </h1>
 
-            <p className="max-w-md text-base leading-relaxed text-ink-soft">
-              Registra tus ingresos y gastos, y toma el control de tus finanzas
-              desde un solo lugar.
-            </p>
+              <p className="max-w-md text-base leading-relaxed text-ink-soft">
+                Registra tus ingresos y gastos, y toma el control de tus
+                finanzas desde un solo lugar.
+              </p>
 
-            <div className="flex w-full max-w-sm flex-col gap-3 sm:w-auto sm:flex-row">
-              <Link href="/register" className="btn-primary sm:w-auto sm:px-7">
-                Crear cuenta gratis
-              </Link>
-              <Link href="/login" className="btn-ghost sm:w-auto sm:px-7">
-                Iniciar sesión
-              </Link>
+              <div className="flex w-full max-w-sm flex-col gap-3 sm:w-auto sm:flex-row">
+                <Link
+                  href="/register"
+                  className="btn-primary sm:w-auto sm:px-7"
+                >
+                  Crear cuenta gratis
+                </Link>
+                <Link href="/login" className="btn-ghost sm:w-auto sm:px-7">
+                  Iniciar sesión
+                </Link>
+              </div>
+
+              <p className="text-xs text-ink-soft">
+                Gratis para siempre · Sin tarjeta · Tus datos son privados
+              </p>
             </div>
-
-            <p className="text-xs text-ink-soft">
-              Gratis para siempre · Sin tarjeta · Tus datos son privados
-            </p>
+            <div className="w-md">
+              <Suspense
+                fallback={
+                  <div className="h-80 animate-pulse rounded-2xl bg-surface" />
+                }
+              >
+                <BalanceCard mock />
+              </Suspense>
+            </div>
           </section>
 
           <section
@@ -170,7 +186,7 @@ export default async function HomePage() {
         <footer className="border-t border-line">
           <div className="mx-auto flex w-full max-w-5xl flex-col items-start justify-between gap-3 px-4 py-6 sm:flex-row sm:items-center sm:px-6">
             <p className="text-xs text-ink-soft">
-              © {new Date().getFullYear()} Ledger · Finanzas personales
+              © {new Date().getFullYear()} Finance · Finanzas personales
             </p>
             <nav className="flex gap-4" aria-label="Enlaces">
               <Link

@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Ledger — Finanzas personales";
+export const alt = "Finance — Finanzas personales";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -35,7 +35,7 @@ export default function OpenGraphImage() {
               fontFamily: "ui-monospace, monospace",
             }}
           >
-            L
+            F
           </div>
           <div
             style={{
@@ -47,7 +47,7 @@ export default function OpenGraphImage() {
               fontFamily: "ui-monospace, monospace",
             }}
           >
-            Ledger
+            Finance
           </div>
         </div>
 

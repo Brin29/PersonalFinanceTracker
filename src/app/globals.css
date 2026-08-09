@@ -96,3 +96,38 @@ body {
     @apply w-full max-w-sm rounded-2xl border border-line bg-surface p-5 shadow-sm sm:p-7;
   }
 }
+
+@keyframes chart-draw {
+  from {
+    stroke-dashoffset: 1600;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes chart-flow {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+.mock-chart-line {
+  stroke-dasharray: 1600;
+  animation: chart-draw 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.mock-chart-flow {
+  stroke-dasharray: 6 18;
+  animation: chart-flow 1.2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mock-chart-line,
+  .mock-chart-flow {
+    animation: none;
+  }
+}

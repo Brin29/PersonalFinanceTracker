@@ -24,10 +24,10 @@ function Brand() {
   return (
     <Link href="/dashboard" className="flex items-center gap-2.5">
       <span className="flex size-7 items-center justify-center rounded-md bg-leaf-500 font-mono text-xs font-bold text-ink">
-        L
+        F
       </span>
       <span className="font-mono text-sm font-semibold uppercase tracking-[0.25em] text-paper dark:text-ink">
-        Ledger
+        Finance
       </span>
     </Link>
   );

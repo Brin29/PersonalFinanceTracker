@@ -5,7 +5,7 @@ import LoginContent from "@/components/auth/login-content";
 export const metadata: Metadata = {
   title: "Iniciar sesión",
   description:
-    "Accede a tu panel en Ledger para revisar tus movimientos y mantener tu dinero al día.",
+    "Accede a tu panel en Finance para revisar tus movimientos y mantener tu dinero al día.",
 };
 
 export default function LoginPage() {

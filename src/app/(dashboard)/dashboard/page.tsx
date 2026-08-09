@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useProfile } from "@/hooks/profile/queries/useProfile";
 import { useTransactionSummary } from "@/hooks/transactions/queries/useTransactionSummary";
@@ -22,8 +22,20 @@ function DashboardContent() {
   const period: TransactionPeriod = range;
   const { data: summaryData } = useTransactionSummary(period);
 
-  const firstName = user?.firstName ?? "";
-  const summary = summaryData?.summary;
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    // El perfil y el resumen viven en el cache del cliente (react-query).
+    // Renderizarlos solo despues de la hidratacion evita hydration mismatch
+    // entre el HTML del servidor y el primer render del cliente.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setHydrated(true);
+  }, []);
+
+  const firstName = hydrated ? (user?.firstName ?? "") : "";
+  const summary = hydrated && summaryData ? summaryData.summary : undefined;
+  const byMonth = summary ? summaryData?.byMonth : undefined;
+  const byDay = summary ? summaryData?.byDay : undefined;
 
   const [recentFilters, setRecentFilters] = useState<TransactionFiltersState>({
     ...DEFAULT_TRANSACTION_FILTERS,
@@ -73,8 +85,8 @@ function DashboardContent() {
 
       <BalanceCard
         summary={summary}
-        byMonth={summaryData?.byMonth}
-        byDay={summaryData?.byDay}
+        byMonth={byMonth}
+        byDay={byDay}
       />
 
       <section
@@ -91,9 +103,16 @@ function DashboardContent() {
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-soft">
                 {stat.label}
               </p>
-              <p className="mt-2 font-mono text-2xl font-semibold tracking-tight text-ink">
-                {stat.amount}
-              </p>
+              {summary ? (
+                <p className="mt-2 font-mono text-2xl font-semibold tracking-tight text-ink">
+                  {stat.amount}
+                </p>
+              ) : (
+                <div
+                  className="mt-2.5 h-8 w-24 animate-pulse rounded bg-ink/5 dark:bg-white/10"
+                  aria-hidden="true"
+                />
+              )}
               <p
                 className={`mt-2 flex items-center gap-1.5 text-xs font-medium ${stat.tone}`}
               >

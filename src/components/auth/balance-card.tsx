@@ -16,10 +16,15 @@ import {
 
 interface BalanceCardProps {
   compact?: boolean;
+  mock?: boolean;
   summary?: TransactionSummary | null;
   byMonth?: MonthlySummary[];
   byDay?: DailySummary[];
 }
+
+const MOCK_NET_BALANCE = 24830.4;
+const MOCK_TOTAL_INCOME = 3120.5;
+const MOCK_TOTAL_EXPENSES = 2158;
 
 const INCOME_COLOR = "var(--color-leaf-500)";
 const EXPENSE_COLOR = "var(--color-gold-500)";
@@ -44,12 +49,25 @@ const DAY_TOOLTIP_LABEL = new Intl.DateTimeFormat("es-MX", {
   year: "numeric",
 });
 
-const COMPACT_CURRENCY = new Intl.NumberFormat("es-MX", {
-  style: "currency",
-  currency: "MXN",
-  notation: "compact",
-  maximumFractionDigits: 1,
-});
+// Formato determinista: evita hydration mismatch entre el ICU de Node (server)
+// y el del navegador (client), que producen strings distintos ("$1.3 k" vs "1.3 k$")
+function formatCompactCurrency(value: number): string {
+  const sign = value < 0 ? "-" : "";
+  let scaled = Math.abs(value);
+  let suffix = "";
+  if (scaled >= 1_000_000) {
+    scaled /= 1_000_000;
+    suffix = " M";
+  } else if (scaled >= 1_000) {
+    scaled /= 1_000;
+    suffix = " k";
+  }
+  const text =
+    scaled >= 100
+      ? Math.round(scaled).toString()
+      : scaled.toFixed(1).replace(/\.0$/, "");
+  return `${sign}$${text}${suffix}`;
+}
 
 interface ChartPoint {
   key: string;
@@ -115,6 +133,38 @@ function niceCeil(value: number): number {
   return step * magnitude;
 }
 
+function mockValue(seed: number, base: number, amplitude: number): number {
+  const wave =
+    Math.sin(seed * 1.1) * 0.5 + Math.sin(seed * 2.7 + 1.3) * 0.5;
+  return Math.max(0, Math.round((base + wave * amplitude) * 100) / 100);
+}
+
+function buildMockPoints(range: ChartRange): ChartPoint[] {
+  const now = new Date();
+  const isDaily = range === "30d" || range === "7d";
+  const count = isDaily ? (range === "30d" ? 30 : 7) : range === "3m" ? 3 : 6;
+
+  const points: ChartPoint[] = [];
+  for (let i = 0; i < count; i++) {
+    const seed = i + 1;
+    const date = isDaily
+      ? new Date(now.getFullYear(), now.getMonth(), now.getDate() - (count - 1 - i))
+      : new Date(now.getFullYear(), now.getMonth() - (count - 1 - i), 1);
+    const key = isDaily
+      ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+      : `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+    points.push({
+      key,
+      date,
+      label: isDaily ? DAY_LABEL.format(date) : MONTH_LABEL.format(date),
+      income: mockValue(seed, 3800, 1600),
+      expense: mockValue(seed, 2600, 1200),
+    });
+  }
+
+  return points;
+}
+
 const RANGE_OPTIONS: Array<{
   value: ChartRange;
   label: string;
@@ -136,18 +186,25 @@ const FILTER_OPTIONS: Array<{ value: ChartTypeFilter | null; label: string }> =
 function BalanceCardChart({
   byMonth,
   byDay,
+  mock = false,
+  hideIncome = false,
+  hideExpense = false,
 }: {
   byMonth: MonthlySummary[];
   byDay: DailySummary[];
+  mock?: boolean;
+  hideIncome?: boolean;
+  hideExpense?: boolean;
 }) {
   const { chartType, setChartType } = useChartTypeFilter();
   const { range, setRange } = useChartRangeFilter();
 
   const points = useMemo(() => {
+    if (mock) return buildMockPoints(range);
     if (range === "30d") return buildDayPoints(byDay, 30);
     if (range === "7d") return buildDayPoints(byDay, 7);
     return buildMonthPoints(byMonth, range === "3m" ? 3 : 6);
-  }, [range, byMonth, byDay]);
+  }, [range, byMonth, byDay, mock]);
 
   const rangeLabel =
     RANGE_OPTIONS.find((option) => option.value === range)?.labelFull ??
@@ -155,14 +212,40 @@ function BalanceCardChart({
 
   const isDaily = range === "30d" || range === "7d";
 
+  const series: Array<{
+    type: "income" | "expense";
+    color: string;
+    label: string;
+  }> =
+    chartType === "income"
+      ? hideIncome
+        ? []
+        : [{ type: "income", color: INCOME_COLOR, label: "Ingresos" }]
+      : chartType === "expense"
+        ? hideExpense
+          ? []
+          : [{ type: "expense", color: EXPENSE_COLOR, label: "Gastos" }]
+        : [
+            ...(hideIncome
+              ? []
+              : [{ type: "income" as const, color: INCOME_COLOR, label: "Ingresos" }]),
+            ...(hideExpense
+              ? []
+              : [{ type: "expense" as const, color: EXPENSE_COLOR, label: "Gastos" }]),
+          ];
+
+  const visibleTypes = series.map((item) => item.type);
+
   const maxValue = Math.max(
     0,
     ...points.map((point) =>
-      chartType === "income"
-        ? point.income
-        : chartType === "expense"
-          ? point.expense
-          : Math.max(point.income, point.expense),
+      visibleTypes.includes("income") && visibleTypes.includes("expense")
+        ? Math.max(point.income, point.expense)
+        : visibleTypes.includes("income")
+          ? point.income
+          : visibleTypes.includes("expense")
+            ? point.expense
+            : 0,
     ),
   );
   const scaleMax = niceCeil(maxValue) || 1;
@@ -180,20 +263,6 @@ function BalanceCardChart({
 
   const gridSteps = [0, 0.25, 0.5, 0.75, 1];
 
-  const series: Array<{
-    type: "income" | "expense";
-    color: string;
-    label: string;
-  }> =
-    chartType === "income"
-      ? [{ type: "income", color: INCOME_COLOR, label: "Ingresos" }]
-      : chartType === "expense"
-        ? [{ type: "expense", color: EXPENSE_COLOR, label: "Gastos" }]
-        : [
-            { type: "income", color: INCOME_COLOR, label: "Ingresos" },
-            { type: "expense", color: EXPENSE_COLOR, label: "Gastos" },
-          ];
-
   const showXLabel = (index: number) =>
     isDaily
       ? index % 5 === 0 || index === points.length - 1
@@ -210,7 +279,8 @@ function BalanceCardChart({
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-paper/40 dark:text-ink/40">
           {rangeLabel}
         </p>
-        <div className="flex flex-wrap items-center gap-2">
+        {mock ? null : (
+          <div className="flex flex-wrap items-center gap-2">
           <div
             className="flex rounded-lg border border-paper/15 p-0.5 dark:border-ink/15"
             role="group"
@@ -260,10 +330,12 @@ function BalanceCardChart({
               );
             })}
           </div>
-        </div>
+          </div>
+        )}
       </div>
 
       <svg
+        key={mock ? `${range}-${chartType}` : undefined}
         viewBox={`0 0 ${viewWidth} ${viewHeight}`}
         className="mt-3 w-full"
         role="img"
@@ -290,11 +362,12 @@ function BalanceCardChart({
                 className="fill-paper/40 dark:fill-ink/40"
                 style={{ fontSize: 10, fontFamily: "var(--font-mono)" }}
               >
-                {step === 0 ? "0" : COMPACT_CURRENCY.format(value)}
+                {step === 0 ? "0" : formatCompactCurrency(value)}
               </text>
             </g>
           );
         })}
+
 
         {series.map(({ type, color, label }) => (
           <g key={type}>
@@ -307,7 +380,22 @@ function BalanceCardChart({
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
+              className={mock ? "mock-chart-line" : undefined}
             />
+            {mock ? (
+              <polyline
+                points={points
+                  .map((point, index) => `${xFor(index)},${yFor(point[type])}`)
+                  .join(" ")}
+                fill="none"
+                stroke={color}
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.9"
+                className="mock-chart-flow"
+              />
+            ) : null}
             {points.map((point, index) => (
               <circle
                 key={point.key}
@@ -343,40 +431,78 @@ function BalanceCardChart({
 
 export function BalanceCard({
   compact = false,
+  mock = false,
   summary,
   byMonth,
   byDay,
 }: BalanceCardProps) {
-  const netBalance = summary?.netBalance ?? 24830.4;
-  const totalIncome = summary?.totalIncome ?? 3120.5;
-  const totalExpenses = summary?.totalExpenses ?? 2158;
+  const hasData = Boolean(summary) || mock;
+  const showChart = !compact || mock;
+
+  const netBalance = mock ? MOCK_NET_BALANCE : summary?.netBalance;
+  const totalIncome = mock ? MOCK_TOTAL_INCOME : summary?.totalIncome;
+  const totalExpenses = mock ? MOCK_TOTAL_EXPENSES : summary?.totalExpenses;
 
   return (
     <div className="rounded-2xl bg-ink p-5 text-paper shadow-xl shadow-ink/15 sm:p-6 dark:bg-[#18221d] dark:text-ink dark:shadow-black/30">
       <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-paper/50 dark:text-ink/50">
         Saldo total
       </p>
-      <p
-        className={`mt-2 font-mono font-semibold tracking-tight ${compact ? "text-2xl" : "text-3xl xl:text-4xl"}`}
-      >
-        {formatCurrency(netBalance)}
-      </p>
+
+      {hasData ? (
+        <p
+          className={`mt-2 font-mono font-semibold tracking-tight ${compact ? "text-2xl" : "text-3xl xl:text-4xl"}`}
+        >
+          {formatCurrency(netBalance ?? 0)}
+        </p>
+      ) : (
+        <div
+          className="mt-2.5 h-9 w-44 animate-pulse rounded-md bg-white/10 dark:bg-ink/10"
+          aria-hidden="true"
+        />
+      )}
+
       <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-paper/10 pt-4 font-mono text-xs dark:border-ink/10">
-        <span className="flex items-center gap-1.5">
-          <span className="size-1.5 rounded-full bg-leaf-500" />
-          <span className="text-leaf-500">+{formatCurrency(totalIncome)}</span>
-          <span className="text-paper/40 dark:text-ink/40">ingresos</span>
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="size-1.5 rounded-full bg-gold-500" />
-          <span className="text-gold-500">-{formatCurrency(totalExpenses)}</span>
-          <span className="text-paper/40 dark:text-ink/40">gastos</span>
-        </span>
+        {hasData ? (
+          <>
+            <span className="flex items-center gap-1.5">
+              <span className="size-1.5 rounded-full bg-leaf-500" />
+              <span className="text-leaf-500">+{formatCurrency(totalIncome ?? 0)}</span>
+              <span className="text-paper/40 dark:text-ink/40">ingresos</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="size-1.5 rounded-full bg-gold-500" />
+              <span className="text-gold-500">-{formatCurrency(totalExpenses ?? 0)}</span>
+              <span className="text-paper/40 dark:text-ink/40">gastos</span>
+            </span>
+          </>
+        ) : (
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <div
+              className="h-4 w-28 animate-pulse rounded bg-white/10 dark:bg-ink/10"
+              aria-hidden="true"
+            />
+            <div
+              className="h-4 w-28 animate-pulse rounded bg-white/10 dark:bg-ink/10"
+              aria-hidden="true"
+            />
+          </div>
+        )}
       </div>
-      {!compact ? (
+
+      {showChart ? (
         byMonth && byDay ? (
           <div className="mt-5">
-            <BalanceCardChart byMonth={byMonth} byDay={byDay} />
+            <BalanceCardChart
+              hideIncome={totalIncome === 0}
+              hideExpense={totalExpenses === 0}
+              byMonth={byMonth}
+              byDay={byDay}
+            />
+          </div>
+        ) : mock ? (
+          <div className="mt-5">
+            <BalanceCardChart mock byMonth={[]} byDay={[]} />
           </div>
         ) : (
           <div

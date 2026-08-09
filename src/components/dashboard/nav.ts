@@ -29,5 +29,5 @@ export function getPageTitle(pathname: string | null): string {
   const item = [...NAV_ITEMS, ...ACCOUNT_NAV_ITEMS].find((item) =>
     isNavActive(pathname, item.href),
   );
-  return item?.label ?? "Ledger";
+  return item?.label ?? "Finance";
 }
