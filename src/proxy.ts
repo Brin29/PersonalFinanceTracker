@@ -3,20 +3,26 @@ import { NextRequest, NextResponse } from "next/server";
 export function proxy(request: NextRequest) {
   // Validar que el usuario este autenticado
   const hasRefreshToken = request.cookies.has("refresh_token");
+  const hasAccessToken = request.cookies.has("access_token");
 
   const pathname = request.nextUrl.pathname;
 
+
+  
   const isAuthRoute =
-    pathname.startsWith("/login") ||
-    pathname.startsWith("/register");
-
+  pathname.startsWith("/login") ||
+  pathname.startsWith("/register");
+  
   const isProtectedRoute =
-    pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/movements") ||
-    pathname.startsWith("/categories") ||
-    pathname.startsWith("/profile") ||
-    pathname.startsWith("/settings");
-
+  pathname.startsWith("/dashboard") ||
+  pathname.startsWith("/movements") ||
+  pathname.startsWith("/categories") ||
+  pathname.startsWith("/profile") ||
+  pathname.startsWith("/settings");
+  
+  console.log(hasRefreshToken);
+  console.log(hasAccessToken);
+  
   if (!hasRefreshToken && isProtectedRoute) {
     const loginUrl = new URL("/login", request.url);
     const destination = pathname + request.nextUrl.search;
