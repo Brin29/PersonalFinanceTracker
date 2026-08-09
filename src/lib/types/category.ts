@@ -26,11 +26,18 @@ export interface CategoryInput {
 }
 
 export interface CreateCategoryResponse {
+  code: string;
   message: string;
   category: Category;
 }
 
 export interface UpdateCategoryResponse {
+  code: string;
   message: string;
   category: Category;
+}
+
+export interface DeleteCategoryResponse {
+  code: string;
+  message: string;
 }

@@ -97,7 +97,7 @@ export default async function HomePage() {
       />
 
       <div className="flex min-h-dvh flex-col">
-        <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-5 sm:px-6">
+        <header className="fixed mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-5 sm:px-6">
           <div className="flex items-center gap-2.5">
             <span className="flex size-7 items-center justify-center rounded-md bg-leaf-600 font-mono text-xs font-bold text-white">
               F
@@ -106,10 +106,7 @@ export default async function HomePage() {
               Finance
             </span>
           </div>
-          <Link
-            href="/login"
-            className="text-sm font-semibold text-leaf-600 transition-colors hover:text-leaf-700"
-          >
+          <Link href="/register" className="btn-primary sm:w-auto sm:px-7">
             Iniciar sesión
           </Link>
         </header>
@@ -133,13 +130,10 @@ export default async function HomePage() {
               </p>
 
               <div className="flex w-full max-w-sm flex-col gap-3 sm:w-auto sm:flex-row">
-                <Link
-                  href="/register"
-                  className="btn-primary sm:w-auto sm:px-7"
-                >
+                <Link href="/register" className="btn-ghost sm:w-auto sm:px-7">
                   Crear cuenta gratis
                 </Link>
-                <Link href="/login" className="btn-ghost sm:w-auto sm:px-7">
+                <Link href="/login" className="btn-primary sm:w-auto sm:px-7">
                   Iniciar sesión
                 </Link>
               </div>

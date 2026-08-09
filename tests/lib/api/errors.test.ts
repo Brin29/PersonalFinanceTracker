@@ -1,70 +1,34 @@
 import { describe, expect, it } from "vitest";
-import axios from "axios";
-import { getApiErrorMessage } from "@/lib/api/errors";
+import {
+  DEFAULT_MUTATION_ERROR_MESSAGE,
+  getMutationErrorMessage,
+  MUTATION_ERROR_MESSAGES,
+} from "@/lib/api/error-message";
 
-function createAxiosError(
-  status: number | undefined,
-  data?: unknown,
-): unknown {
-  const response = status
-    ? {
-        status,
-        data,
-        statusText: "error",
-        headers: {},
-        config: {} as InternalAxiosRequestConfigStub,
-      }
-    : undefined;
-  return new axios.AxiosError(
-    "Request failed",
-    status ? String(status) : "ERR_NETWORK",
-    undefined,
-    undefined,
-    response as never,
-  );
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type InternalAxiosRequestConfigStub = any;
-
-describe("getApiErrorMessage", () => {
-  const fallback = "Mensaje por defecto";
-
-  it("devuelve el error del servidor si viene en el body", () => {
-    const error = createAxiosError(400, { error: "Correo ya registrado" });
-    expect(getApiErrorMessage(error, fallback)).toBe("Correo ya registrado");
-  });
-
-  it("devuelve mensaje de conexión si no hay response", () => {
-    const error = createAxiosError(undefined);
-    expect(getApiErrorMessage(error, fallback)).toBe(
-      "No se pudo conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.",
+describe("getMutationErrorMessage", () => {
+  it("devuelve el mensaje mapeado para códigos conocidos", () => {
+    expect(getMutationErrorMessage("INVALID_CREDENTIALS")).toBe(
+      MUTATION_ERROR_MESSAGES.INVALID_CREDENTIALS,
+    );
+    expect(getMutationErrorMessage("EMAIL_ALREADY_REGISTERED")).toBe(
+      MUTATION_ERROR_MESSAGES.EMAIL_ALREADY_REGISTERED,
+    );
+    expect(getMutationErrorMessage("TRANSACTION_NOTFOUND")).toBe(
+      MUTATION_ERROR_MESSAGES.TRANSACTION_NOTFOUND,
     );
   });
 
-  it("devuelve mensaje de credenciales en 401 sin body de error", () => {
-    const error = createAxiosError(401, {});
-    expect(getApiErrorMessage(error, fallback)).toBe(
-      "Credenciales incorrectas. Revisa e inténtalo de nuevo.",
+  it("devuelve el mensaje por defecto para códigos desconocidos", () => {
+    expect(getMutationErrorMessage("UNKNOWN_CODE")).toBe(
+      DEFAULT_MUTATION_ERROR_MESSAGE,
     );
+    expect(getMutationErrorMessage("")).toBe(DEFAULT_MUTATION_ERROR_MESSAGE);
   });
 
-  it("devuelve mensaje de servidor en 5xx", () => {
-    expect(getApiErrorMessage(createAxiosError(500), fallback)).toBe(
-      "Ocurrió un error en el servidor. Inténtalo de nuevo más tarde.",
-    );
-    expect(getApiErrorMessage(createAxiosError(503), fallback)).toBe(
-      "Ocurrió un error en el servidor. Inténtalo de nuevo más tarde.",
-    );
-  });
-
-  it("usa el fallback para errores que no son de axios", () => {
-    expect(getApiErrorMessage(new Error("boom"), fallback)).toBe(fallback);
-    expect(getApiErrorMessage("string", fallback)).toBe(fallback);
-    expect(getApiErrorMessage(null, fallback)).toBe(fallback);
-  });
-
-  it("usa el fallback para otros códigos", () => {
-    expect(getApiErrorMessage(createAxiosError(404), fallback)).toBe(fallback);
+  it("cubre todos los códigos definidos en el mapa", () => {
+    expect(Object.keys(MUTATION_ERROR_MESSAGES).length).toBeGreaterThan(0);
+    Object.keys(MUTATION_ERROR_MESSAGES).forEach((code) => {
+      expect(getMutationErrorMessage(code)).not.toBe(DEFAULT_MUTATION_ERROR_MESSAGE);
+    });
   });
 });

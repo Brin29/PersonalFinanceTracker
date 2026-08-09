@@ -3,6 +3,7 @@ import type {
   CategoriesResponse,
   CategoryInput,
   CreateCategoryResponse,
+  DeleteCategoryResponse,
   UpdateCategoryResponse,
 } from "../lib/types/category";
 
@@ -33,7 +34,9 @@ export async function updateCategory(
 
 export async function deleteCategory(
   id: string,
-): Promise<{ message: string }> {
-  const response = await apiClient.delete(`/categories/${id}`);
+): Promise<DeleteCategoryResponse> {
+  const response = await apiClient.delete<DeleteCategoryResponse>(
+    `/categories/${id}`,
+  );
   return response.data;
 }

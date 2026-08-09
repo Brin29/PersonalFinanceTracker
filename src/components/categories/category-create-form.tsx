@@ -6,7 +6,7 @@ interface CategoryCreateFormProps {
   isPending: boolean;
   onNameChange: (value: string) => void;
   onTypeChange: (value: CategoryType) => void;
-  onSubmit: (event: React.FormEvent) => void;
+  onSubmit: (event: React.SubmitEvent) => void;
 }
 
 export function CategoryCreateForm({

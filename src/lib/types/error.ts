@@ -1,7 +1,4 @@
-export interface ApiResponseError{ 
-  response: {
-    data: {
-      error: string;
-    }
-  }
+export interface ApiResponseError {
+  code: string;
+  message: string;
 }

@@ -7,7 +7,8 @@ import {
 import { useEffect, useState } from "react";
 import { FeedbackInfo } from "@/components/ui/info-modal";
 import { SubmitHandler, useForm, useWatch } from "react-hook-form";
-import { getApiErrorMessage } from "@/lib/api/errors";
+import { getMutationErrorMessage } from "@/lib/api/error-message";
+import { getMutationSuccessMessage } from "@/lib/api/success-message";
 import { setSessionCookie } from "@/lib/auth/session-cookie";
 import { CodeStepValues, EmailStepValues, RegisterStepValues } from "@/lib/types/auth";
 
@@ -47,17 +48,14 @@ export function useRegisterFlow() {
       setFeedback({
         tone: "success",
         title: "Código enviado",
-        message: `Enviamos un código de verificación a ${values.email}.`,
+        message: getMutationSuccessMessage(response.code),
         onAccept: () => setStep(2),
       });
     } catch (error) {
       setFeedback({
         tone: "error",
         title: "No se pudo enviar el código",
-        message: getApiErrorMessage(
-          error,
-          "No se pudo enviar el código de verificación.",
-        ),
+        message: getMutationErrorMessage(error.code),
       });
     }
   };
@@ -72,17 +70,14 @@ export function useRegisterFlow() {
       setFeedback({
         tone: "success",
         title: "Correo verificado",
-        message: "Tu correo se verificó correctamente. Continúa con tus datos.",
+        message: getMutationSuccessMessage(response.code),
         onAccept: () => setStep(3),
       });
     } catch (error) {
       setFeedback({
         tone: "error",
         title: "Código inválido",
-        message: getApiErrorMessage(
-          error,
-          "El código no es válido. Inténtalo de nuevo.",
-        ),
+        message: getMutationErrorMessage(error.code),
       });
     }
   };
@@ -95,7 +90,7 @@ export function useRegisterFlow() {
 
   const handleRegisterSubmit: SubmitHandler<RegisterStepValues> = async (values) => {
     try {
-      await registerMutation.mutateAsync({
+      const result = await registerMutation.mutateAsync({
         data: {
           firstName: values.firstName,
           lastName: values.lastName,
@@ -107,7 +102,7 @@ export function useRegisterFlow() {
       setFeedback({
         tone: "success",
         title: "Cuenta creada",
-        message: "Tu cuenta se creó correctamente. ¡Bienvenido a tus finanzas!",
+        message: getMutationSuccessMessage(result.code),
         onAccept: () => {
           router.push("/dashboard");
           router.refresh();
@@ -117,7 +112,7 @@ export function useRegisterFlow() {
       setFeedback({
         tone: "error",
         title: "No se pudo crear la cuenta",
-        message: getApiErrorMessage(error, "No se pudo crear la cuenta."),
+        message: getMutationErrorMessage(error.code),
       });
     }
   };

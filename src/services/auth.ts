@@ -1,8 +1,10 @@
 import { apiClient } from "../lib/api/client";
 import type {
   AuthResponse,
+  DeleteAccountResponse,
   LoginInput,
   ProfileInput,
+  ProfileResponse,
   RegisterInput,
   RequestCodeInput,
   RequestCodeResponse,
@@ -57,28 +59,28 @@ export async function logout(): Promise<void> {
   await apiClient.post("/auth/logout");
 }
 
-export async function updateProfile(data: ProfileInput): Promise<User> {
-  const response = await apiClient.patch<{ message: string; user: User }>(
+export async function updateProfile(data: ProfileInput): Promise<ProfileResponse> {
+  const response = await apiClient.patch<ProfileResponse>(
     "/auth/profile",
     { data },
   );
-  return response.data.user;
+  return response.data;
 }
 
-export async function uploadAvatar(file: File): Promise<User> {
+export async function uploadAvatar(file: File): Promise<ProfileResponse> {
   const formData = new FormData();
   formData.append("avatar", file);
-  const response = await apiClient.post<{ message: string; user: User }>(
+  const response = await apiClient.post<ProfileResponse>(
     "/auth/avatar",
     formData,
     {
       headers: { "Content-Type": "multipart/form-data" },
     },
   );
-  return response.data.user;
+  return response.data;
 }
 
-export async function deleteAccount(): Promise<{ message: string }> {
+export async function deleteAccount(): Promise<DeleteAccountResponse> {
   const response = await apiClient.delete("/auth/profile");
   return response.data;
 }

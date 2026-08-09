@@ -11,7 +11,8 @@ import { Field } from "@/components/ui/field";
 import { Modal } from "@/components/ui/modal";
 import { InfoModal, type FeedbackInfo } from "@/components/ui/info-modal";
 import { UserAvatar } from "@/components/dashboard/user-avatar";
-import { getApiErrorMessage } from "@/lib/api/errors";
+import { getMutationErrorMessage } from "@/lib/api/error-message";
+import { getMutationSuccessMessage } from "@/lib/api/success-message";
 import { PROVIDER_LABELS } from "@/lib/utils/provider";
 import CameraIcon from "@/components/ui/icons/cameraIcon";
 import TrashIcon from "@/components/ui/icons/trashIcon";
@@ -67,23 +68,20 @@ export default function SettingsContent() {
     values,
   ) => {
     try {
-      await update.mutateAsync({
+      const result = await update.mutateAsync({
         firstName: values.firstName.trim(),
         lastName: values.lastName.trim(),
       });
       setFeedback({
         tone: "success",
         title: "Información actualizada",
-        message: "Tus datos de perfil se actualizaron correctamente.",
+        message: getMutationSuccessMessage(result.code),
       });
     } catch (error) {
       setFeedback({
         tone: "error",
         title: "No se pudo actualizar",
-        message: getApiErrorMessage(
-          error,
-          "No se pudo actualizar tu información.",
-        ),
+        message: getMutationErrorMessage(error.code),
       });
     }
   };
@@ -103,29 +101,29 @@ export default function SettingsContent() {
     }
 
     try {
-      await avatar.mutateAsync(file);
+      const result = await avatar.mutateAsync(file);
       setFeedback({
         tone: "success",
         title: "Foto actualizada",
-        message: "Tu foto de perfil se actualizó correctamente.",
+        message: getMutationSuccessMessage(result.code),
       });
     } catch (error) {
       setFeedback({
         tone: "error",
         title: "No se pudo subir la imagen",
-        message: getApiErrorMessage(error, "No se pudo subir la imagen."),
+        message: getMutationErrorMessage(error.code),
       });
     }
   };
 
   const handleDeleteAccount = async () => {
     try {
-      await removeAccount.mutateAsync();
+      const result = await removeAccount.mutateAsync();
       setDeleteOpen(false);
       setFeedback({
         tone: "success",
         title: "Cuenta eliminada",
-        message: "Tu cuenta y tus datos fueron eliminados correctamente.",
+        message: getMutationSuccessMessage(result.code),
         onAccept: () => {
           router.replace("/login");
           router.refresh();
@@ -135,7 +133,7 @@ export default function SettingsContent() {
       setFeedback({
         tone: "error",
         title: "No se pudo eliminar la cuenta",
-        message: getApiErrorMessage(error, "No se pudo eliminar la cuenta."),
+        message: getMutationErrorMessage(error.code),
       });
     }
   };

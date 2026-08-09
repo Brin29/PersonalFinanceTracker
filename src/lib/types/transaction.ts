@@ -109,11 +109,18 @@ export interface TransactionInput {
 }
 
 export interface CreateTransactionResponse {
+  code: string;
   message: string;
   transaction: Transaction;
 }
 
 export interface UpdateTransactionResponse {
+  code: string;
   message: string;
   transaction: Transaction;
+}
+
+export interface DeleteTransactionResponse {
+  code: string;
+  message: string;
 }

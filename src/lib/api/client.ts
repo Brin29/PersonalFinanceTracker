@@ -55,6 +55,14 @@ apiClient.interceptors.request.use(
   }
 );
 
+function attachBackendCode(error: AxiosError): AxiosError {
+  const body = error.response?.data as { code?: unknown } | undefined;
+  if (typeof body?.code === "string") {
+    error.code = body.code;
+  }
+  return error;
+}
+
 // --- Response interceptor: maneja loader + refresh + redirect ---
 apiClient.interceptors.response.use(
   (response) => {
@@ -64,6 +72,7 @@ apiClient.interceptors.response.use(
     return response;
   },
   async (error: AxiosError) => {
+    attachBackendCode(error);
     const original = error.config as InternalAxiosRequestConfig;
 
     if (!original?.skipLoader) {
@@ -79,7 +88,7 @@ apiClient.interceptors.response.use(
     }
 
     // Cualquier otra request con 401: intenta refrescar y reintentar
-    if (error.response?.status === 401 && !original._retry) {
+    if (error.response?.status === 401 && !original._retry && window.location.pathname !== "/login") {
       original._retry = true;
 
       if (!isRefreshing) {
@@ -95,7 +104,9 @@ apiClient.interceptors.response.use(
         } catch (refreshError) {
           pendingQueue = [];
           redirectToLogin();
-          return Promise.reject(refreshError);
+          return Promise.reject(
+            attachBackendCode(refreshError as AxiosError),
+          );
         } finally {
           isRefreshing = false;
         }

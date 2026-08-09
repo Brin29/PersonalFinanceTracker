@@ -1,6 +1,7 @@
 import { apiClient } from "../lib/api/client";
 import type {
   CreateTransactionResponse,
+  DeleteTransactionResponse,
   TransactionFilters,
   TransactionInput,
   TransactionsResponse,
@@ -48,7 +49,11 @@ export async function updateTransaction(
   return response.data;
 }
 
-export async function deleteTransaction(id: string): Promise<{ message: string }> {
-  const response = await apiClient.delete(`/transactions/${id}`);
+export async function deleteTransaction(
+  id: string,
+): Promise<DeleteTransactionResponse> {
+  const response = await apiClient.delete<DeleteTransactionResponse>(
+    `/transactions/${id}`,
+  );
   return response.data;
 }

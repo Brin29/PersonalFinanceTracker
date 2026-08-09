@@ -24,6 +24,7 @@ const mockUser: User = {
 };
 
 const mockAuthResponse: AuthResponse = {
+  code: "LOGIN_SUCCESS",
   message: "ok",
   access_token: "at",
   refresh_token: "rt",

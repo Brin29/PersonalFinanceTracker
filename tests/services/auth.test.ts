@@ -121,18 +121,28 @@ describe("auth service", () => {
   });
 
   it("updateProfile envía datos a /auth/profile", async () => {
-    mockedPatch.mockResolvedValueOnce(mockResponse({ message: "ok", user: mockUser }));
+    const profileResponse = {
+      code: "PROFILE_UPDATED",
+      message: "ok",
+      user: mockUser,
+    };
+    mockedPatch.mockResolvedValueOnce(mockResponse(profileResponse));
 
     const result = await updateProfile({ firstName: "Ana", lastName: "López" });
 
     expect(mockedPatch).toHaveBeenCalledWith("/auth/profile", {
       data: { firstName: "Ana", lastName: "López" },
     });
-    expect(result).toEqual(mockUser);
+    expect(result).toEqual(profileResponse);
   });
 
   it("uploadAvatar envía un FormData multipart", async () => {
-    mockedPost.mockResolvedValueOnce(mockResponse({ message: "ok", user: mockUser }));
+    const avatarResponse = {
+      code: "AVATAR_UPDATED",
+      message: "ok",
+      user: mockUser,
+    };
+    mockedPost.mockResolvedValueOnce(mockResponse(avatarResponse));
     const file = new File(["x"], "avatar.png", { type: "image/png" });
 
     const result = await uploadAvatar(file);
@@ -141,15 +151,20 @@ describe("auth service", () => {
     expect(url).toBe("/auth/avatar");
     expect(body).toBeInstanceOf(FormData);
     expect(options?.headers).toEqual({ "Content-Type": "multipart/form-data" });
-    expect(result).toEqual(mockUser);
+    expect(result).toEqual(avatarResponse);
   });
 
   it("deleteAccount llama a DELETE /auth/profile", async () => {
-    mockedDelete.mockResolvedValueOnce(mockResponse({ message: "cuenta eliminada" }));
+    mockedDelete.mockResolvedValueOnce(
+      mockResponse({ code: "ACCOUNT_DELETED", message: "cuenta eliminada" }),
+    );
 
     const result = await deleteAccount();
 
     expect(mockedDelete).toHaveBeenCalledWith("/auth/profile");
-    expect(result).toEqual({ message: "cuenta eliminada" });
+    expect(result).toEqual({
+      code: "ACCOUNT_DELETED",
+      message: "cuenta eliminada",
+    });
   });
 });

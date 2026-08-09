@@ -14,10 +14,22 @@ export interface AuthTokens {
 }
 
 export interface AuthResponse {
+  code: string;
   message: string;
   access_token: string;
   refresh_token: string;
   user: User;
+}
+
+export interface ProfileResponse {
+  code: string;
+  message: string;
+  user: User;
+}
+
+export interface DeleteAccountResponse {
+  code: string;
+  message: string;
 }
 
 export interface LoginInput {
@@ -51,6 +63,7 @@ export interface VerifyCodeInput {
 }
 
 export interface VerifyCodeResponse {
+  code: string;
   message: string;
   verification_token: string;
 }

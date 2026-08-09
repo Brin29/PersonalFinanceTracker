@@ -1,11 +1,12 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { SubmitEvent, useEffect, useRef, useState } from "react";
 import { useCategories } from "@/hooks/categories/queries/useCategories";
 import { useCreateCategory } from "@/hooks/categories/mutations/useCreateCategory";
 import { useUpdateCategory } from "@/hooks/categories/mutations/useUpdateCategory";
 import { useDeleteCategory } from "@/hooks/categories/mutations/useDeleteCategory";
-import { getApiErrorMessage } from "@/lib/api/errors";
+import { getMutationErrorMessage } from "@/lib/api/error-message";
+import { getMutationSuccessMessage } from "@/lib/api/success-message";
 import type { Category, CategoryType } from "@/lib/types/category";
 import { InfoModal, type FeedbackInfo } from "@/components/ui/info-modal";
 import { CategoryCreateForm } from "./category-create-form";
@@ -77,10 +78,7 @@ export function CategoryList() {
       setFeedback({
         tone: "error",
         title: "No se pudo actualizar",
-        message: getApiErrorMessage(
-          error,
-          "No se pudo actualizar la categoría.",
-        ),
+        message: getMutationErrorMessage(error.code),
       });
     }
   };
@@ -90,7 +88,7 @@ export function CategoryList() {
     setEditValue("");
   };
 
-  const handleCreate = async (event: FormEvent) => {
+  const handleCreate = async (event: SubmitEvent) => {
     event.preventDefault();
     const trimmed = newName.trim();
     if (!trimmed || create.isPending) return;
@@ -101,7 +99,7 @@ export function CategoryList() {
       setFeedback({
         tone: "error",
         title: "No se pudo crear",
-        message: getApiErrorMessage(error, "No se pudo crear la categoría."),
+        message: getMutationErrorMessage(error.code),
       });
     }
   };
@@ -109,19 +107,19 @@ export function CategoryList() {
   const handleDelete = async () => {
     if (!deleting) return;
     try {
-      await remove.mutateAsync(deleting._id);
+      const result = await remove.mutateAsync(deleting._id);
       setDeleting(null);
       setFeedback({
         tone: "success",
         title: "Categoría eliminada",
-        message: "La categoría se eliminó correctamente.",
+        message: getMutationSuccessMessage(result.code),
       });
     } catch (error) {
       setDeleting(null);
       setFeedback({
         tone: "error",
         title: "No se pudo eliminar",
-        message: getApiErrorMessage(error, "No se pudo eliminar la categoría."),
+        message: getMutationErrorMessage(error.code),
       });
     }
   };

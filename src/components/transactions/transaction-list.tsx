@@ -5,7 +5,8 @@ import { useTransactions } from "@/hooks/transactions/queries/useTransactions";
 import { useDeleteTransaction } from "@/hooks/transactions/mutations/useDeleteTransaction";
 import { useParamsOptions } from "@/hooks/params/useParamsOptions";
 import type { TransactionFiltersState } from "@/hooks/transactions/useTransactionUrlFilters";
-import { getApiErrorMessage } from "@/lib/api/errors";
+import { getMutationErrorMessage } from "@/lib/api/error-message";
+import { getMutationSuccessMessage } from "@/lib/api/success-message";
 import { Modal } from "@/components/ui/modal";
 import { InfoModal, type FeedbackInfo } from "@/components/ui/info-modal";
 import { TransactionForm } from "./transaction-form";
@@ -204,22 +205,19 @@ export function TransactionList({
   const handleDelete = async () => {
     if (!deleting) return;
     try {
-      await remove.mutateAsync(deleting._id);
+      const result = await remove.mutateAsync(deleting._id);
       setDeleting(null);
       setFeedback({
         tone: "success",
         title: "Transacción eliminada",
-        message: "El movimiento se eliminó correctamente.",
+        message: getMutationSuccessMessage(result.code),
       });
     } catch (error) {
       setDeleting(null);
       setFeedback({
         tone: "error",
         title: "No se pudo eliminar",
-        message: getApiErrorMessage(
-          error,
-          "No se pudo eliminar la transacción.",
-        ),
+        message: getMutationErrorMessage(error.code),
       });
     }
   };

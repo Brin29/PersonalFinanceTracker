@@ -9,9 +9,9 @@ import { OAuthButtons } from "@/components/auth/oauth-buttons";
 import { Field } from "@/components/ui/field";
 import { InfoModal, type FeedbackInfo } from "@/components/ui/info-modal";
 import { useLogin } from "@/hooks/auth/mutations/useLogin";
-import { getApiErrorMessage } from "@/lib/api/errors";
 import { resolvePostAuthPath } from "@/lib/utils/redirect";
 import type { LoginInput } from "@/lib/types/auth";
+import { getMutationErrorMessage } from "@/lib/api/error-message";
 
 export default function LoginContent() {
   const router = useRouter();
@@ -36,11 +36,10 @@ export default function LoginContent() {
       router.replace(redirectPath);
       router.refresh();
     } catch (error) {
-      // Actualizar lista de mensajes de
       setFeedback({
         tone: "error",
         title: "No se pudo iniciar sesión",
-        message: getApiErrorMessage(error, "No se pudo iniciar sesión."),
+        message: getMutationErrorMessage(error.code)
       });
     }
   };

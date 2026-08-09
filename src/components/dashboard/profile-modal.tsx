@@ -8,7 +8,8 @@ import { Field } from "@/components/ui/field";
 import { useProfile } from "@/hooks/profile/queries/useProfile";
 import { useUpdateProfile } from "@/hooks/profile/mutations/useUpdateProfile";
 import { useUploadAvatar } from "@/hooks/profile/mutations/useUploadAvatar";
-import { getApiErrorMessage } from "@/lib/api/errors";
+import { getMutationErrorMessage } from "@/lib/api/error-message";
+import { getMutationSuccessMessage } from "@/lib/api/success-message";
 import { PROVIDER_LABELS } from "@/lib/utils/provider";
 import { UserAvatar } from "./user-avatar";
 import CameraIcon from "@/components/ui/icons/cameraIcon";
@@ -66,20 +67,20 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
 
   const onSubmit: SubmitHandler<ProfileFormValues> = async (values) => {
     try {
-      await update.mutateAsync({
+      const result = await update.mutateAsync({
         firstName: values.firstName.trim(),
         lastName: values.lastName.trim(),
       });
       setFeedback({
         tone: "success",
         title: "Información actualizada",
-        message: "Tus datos de perfil se actualizaron correctamente.",
+        message: getMutationSuccessMessage(result.code),
       });
     } catch (error) {
       setFeedback({
         tone: "error",
         title: "No se pudo actualizar",
-        message: getApiErrorMessage(error, "No se pudo actualizar el perfil."),
+        message: getMutationErrorMessage(error.code),
       });
     }
   };
@@ -99,17 +100,17 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
     }
 
     try {
-      await avatar.mutateAsync(file);
+      const result = await avatar.mutateAsync(file);
       setFeedback({
         tone: "success",
         title: "Foto actualizada",
-        message: "Tu foto de perfil se actualizó correctamente.",
+        message: getMutationSuccessMessage(result.code),
       });
     } catch (error) {
       setFeedback({
         tone: "error",
         title: "No se pudo subir la imagen",
-        message: getApiErrorMessage(error, "No se pudo subir la imagen."),
+        message: getMutationErrorMessage(error.code),
       });
     }
   };

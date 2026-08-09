@@ -8,7 +8,8 @@ import { Field } from "@/components/ui/field";
 import { useCreateTransaction } from "@/hooks/transactions/mutations/useCreateTransaction";
 import { useUpdateTransaction } from "@/hooks/transactions/mutations/useUpdateTransaction";
 import { useParamsOptions } from "@/hooks/params/useParamsOptions";
-import { getApiErrorMessage } from "@/lib/api/errors";
+import { getMutationErrorMessage } from "@/lib/api/error-message";
+import { getMutationSuccessMessage } from "@/lib/api/success-message";
 import { toDateInputValue } from "@/lib/utils/format";
 import type { ParamOption } from "@/lib/types/params";
 import type {
@@ -152,26 +153,19 @@ export function TransactionForm({
     };
 
     try {
-      if (transaction) {
-        await update.mutateAsync({ id: transaction._id, data: payload });
-      } else {
-        await create.mutateAsync(payload);
-      }
+      const result = transaction
+        ? await update.mutateAsync({ id: transaction._id, data: payload })
+        : await create.mutateAsync(payload);
       setFeedback({
         tone: "success",
         title: transaction ? "Cambios guardados" : "Transacción creada",
-        message: transaction
-          ? "Tus cambios se guardaron correctamente."
-          : "Tu movimiento se registró correctamente.",
+        message: getMutationSuccessMessage(result.code),
       });
     } catch (error) {
       setFeedback({
         tone: "error",
         title: "No se pudo guardar",
-        message: getApiErrorMessage(
-          error,
-          "No se pudo guardar la transacción.",
-        ),
+        message: getMutationErrorMessage(error.code),
       });
     }
   };
