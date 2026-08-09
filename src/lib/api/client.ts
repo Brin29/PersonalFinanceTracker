@@ -1,6 +1,7 @@
 import axios, { InternalAxiosRequestConfig, AxiosError } from "axios";
 import { store } from "@/store";
 import { loaderActions } from "@/store/network-loader/loader.slice";
+import { clearSessionCookie } from "@/lib/auth/session-cookie";
 
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
@@ -33,6 +34,7 @@ function onRefreshed() {
 function redirectToLogin() {
   if (typeof window === "undefined") return;
 
+  clearSessionCookie();
   const destination = window.location.pathname + window.location.search;
   if (window.location.pathname !== "/login") {
     window.location.href = `/login?from=${encodeURIComponent(destination)}`;

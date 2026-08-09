@@ -3,12 +3,14 @@
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { resolvePostAuthPath } from "@/lib/utils/redirect";
+import { setSessionCookie } from "@/lib/auth/session-cookie";
 
 export default function OAuthSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    setSessionCookie();
     const from = searchParams?.get("from");
     const redirectPath = resolvePostAuthPath(from);
     const timer = setTimeout(() => {

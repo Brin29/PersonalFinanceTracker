@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { FeedbackInfo } from "@/components/ui/info-modal";
 import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { getApiErrorMessage } from "@/lib/api/errors";
+import { setSessionCookie } from "@/lib/auth/session-cookie";
 import { CodeStepValues, EmailStepValues, RegisterStepValues } from "@/lib/types/auth";
 
 
@@ -102,6 +103,7 @@ export function useRegisterFlow() {
         },
         verificationToken,
       });
+      setSessionCookie();
       setFeedback({
         tone: "success",
         title: "Cuenta creada",

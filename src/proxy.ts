@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export function proxy(request: NextRequest) {
   // Validar que el usuario este autenticado
-  const hasRefreshToken = request.cookies.has("refresh_token");
-  const hasAccessToken = request.cookies.has("access_token");
+  // auth_session la setea el frontend en su propio dominio (backend esta en otro dominio)
+  const hasSession =
+    request.cookies.has("auth_session") ||
+    request.cookies.has("refresh_token");
 
   const pathname = request.nextUrl.pathname;
   
@@ -17,26 +19,23 @@ export function proxy(request: NextRequest) {
   pathname.startsWith("/categories") ||
   pathname.startsWith("/profile") ||
   pathname.startsWith("/settings");
-
-  console.log(hasRefreshToken);
-  console.log(hasAccessToken);
   
-  // if (!hasRefreshToken && isProtectedRoute) {
-  //   const loginUrl = new URL("/login", request.url);
-  //   const destination = pathname + request.nextUrl.search;
-  //   if (destination !== "/") {
-  //     loginUrl.searchParams.set("from", destination);
-  //   }
-  //   return NextResponse.redirect(loginUrl);
-  // }
+  if (!hasSession && isProtectedRoute) {
+    const loginUrl = new URL("/login", request.url);
+    const destination = pathname + request.nextUrl.search;
+    if (destination !== "/") {
+      loginUrl.searchParams.set("from", destination);
+    }
+    return NextResponse.redirect(loginUrl);
+  }
 
-  // if (hasRefreshToken && pathname === "/") {
-  //   return NextResponse.redirect(new URL("/dashboard", request.url));
-  // }
+  if (hasSession && pathname === "/") {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
-  // if (hasRefreshToken && isAuthRoute) {
-  //   return NextResponse.redirect(new URL("/dashboard", request.url));
-  // }
+  if (hasSession && isAuthRoute) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
   return NextResponse.next();
 }
