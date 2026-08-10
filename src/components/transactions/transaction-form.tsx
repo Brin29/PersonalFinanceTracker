@@ -45,7 +45,11 @@ function TypeSelector({ types, selectedType, onChange }: TypeSelectorProps) {
   return (
     <div className="flex flex-col gap-1.5">
       <span className="field-label">Tipo</span>
-      <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Tipo">
+      <div
+        className="grid grid-cols-2 gap-2"
+        role="radiogroup"
+        aria-label="Tipo"
+      >
         {types.map((type) => {
           const active = selectedType === type.value;
           return (
@@ -135,7 +139,9 @@ export function TransactionForm({
     const current = getValues("category");
     if (
       current &&
-      !categories.some((category) => category.key === current && category.type === type)
+      !categories.some(
+        (category) => category.key === current && category.type === type,
+      )
     ) {
       setValue("category", "", { shouldValidate: true });
     }
@@ -216,8 +222,21 @@ export function TransactionForm({
           step="0.01"
           min="0.01"
           placeholder="0.00"
+          onKeyDown={(e) => {
+            if (
+              e.key === "e" ||
+              e.key === "E" ||
+              e.key === "-" ||
+              e.key === "+"
+            ) {
+              e.preventDefault();
+            }
+          }}
           error={errors.amount?.message}
           {...register("amount", {
+            onChange: (e) => {
+              
+            },
             required: "Ingresa el monto.",
             pattern: {
               value: AMOUNT_PATTERN,
@@ -236,7 +255,9 @@ export function TransactionForm({
           <select
             id="category"
             className={`field-input${
-              errors.category ? " border-red-300 focus:border-red-400 focus:ring-red-400/20" : ""
+              errors.category
+                ? " border-red-300 focus:border-red-400 focus:ring-red-400/20"
+                : ""
             }`}
             aria-invalid={errors.category ? "true" : undefined}
             {...register("category", {

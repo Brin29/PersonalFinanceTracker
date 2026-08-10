@@ -32,6 +32,7 @@ export const MUTATION_ERROR_MESSAGES = {
   INVALID_CATEGORY_TYPE: "El tipo de categoría debe ser ingreso o gasto.",
   CATEGORY_NAME_REQUIRED: "Debes escribir un nombre para la categoría.",
   CATEGORY_NOTFOUND: "La categoría no existe o fue eliminada.",
+  CATEGORY_NAME_TAKEN: "Ya existe una categoría con este nombre.",
   CATEGORY_NOT_EDITABLE: "La categoría no existe o no se puede editar.",
   CATEGORY_NOT_DELETABLE: "La categoría no existe o no se puede eliminar.",
   INVALID_CATEGORY:

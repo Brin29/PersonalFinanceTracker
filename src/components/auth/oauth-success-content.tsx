@@ -13,11 +13,8 @@ export default function OAuthSuccessContent() {
     setSessionCookie();
     const from = searchParams?.get("from");
     const redirectPath = resolvePostAuthPath(from);
-    const timer = setTimeout(() => {
-      router.replace(redirectPath);
-      router.refresh();
-    }, 900);
-    return () => clearTimeout(timer);
+    router.replace(redirectPath);
+    router.refresh();
   }, [router, searchParams]);
 
   return (

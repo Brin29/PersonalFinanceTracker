@@ -26,10 +26,6 @@ export default function DashboardContent() {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    // El perfil y el resumen viven en el cache del cliente (react-query).
-    // Renderizarlos solo despues de la hidratacion evita hydration mismatch
-    // entre el HTML del servidor y el primer render del cliente.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHydrated(true);
   }, []);
 
