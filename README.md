@@ -1,17 +1,19 @@
-# Finance — Personal Finance Tracker (Frontend)
+# Personal Finance Tracker
 
-Aplicación web para el registro y visualización de finanzas personales: ingresos, gastos, categorías y resúmenes gráficos. Frontend en Next.js con React 19, comunicado con una API propia de Fastify + MongoDB.
+Aplicación para el registro y visualización de finanzas personales: ingresos, gastos, categorías y resúmenes gráficos. En Next.js con React 19, comunicado con una API en Fastify y base de datos en MongoDB, el Frontend está desplegado con Vercel y el backend en Railway.
 
 ---
 
-## Tabla de contenidos
+## Contenido
 
 - [Tecnologías](#tecnologías)
 - [Arquitectura](#arquitectura)
 - [Decisiones de diseño](#decisiones-de-diseño)
 - [Estructura del proyecto](#estructura-del-proyecto)
-- [Scripts](#scripts)
+- [Comandos](#comandos)
 - [Variables de entorno](#variables-de-entorno)
+- [Entornos](#entornos)
+- [SEO](#seo)
 - [Puesta en marcha](#puesta-en-marcha)
 - [Pruebas](#pruebas)
 
@@ -21,59 +23,35 @@ Aplicación web para el registro y visualización de finanzas personales: ingres
 
 ### Dependencias de producción
 
-| Tecnología | Versión | Uso |
-| --- | --- | --- |
-| [Next.js](https://nextjs.org) | 16.3.0 | Framework React con App Router, Server Components, proxy de autenticación y metadata SEO |
-| [React](https://react.dev) | 19.2.8 | Librería de interfaz de usuario |
-| [React DOM](https://react.dev) | 19.2.8 | Renderizado de React en el navegador |
-| [TypeScript](https://www.typescriptlang.org) | 5.9.3 | Tipado estático en todo el proyecto |
-| [Tailwind CSS](https://tailwindcss.com) | 4.3.3 | Estilos utilitarios con tokens de tema (`@theme`) |
-| [@tailwindcss/postcss](https://tailwindcss.com) | 4.3.3 | Plugin de PostCSS para Tailwind v4 |
-| [Redux Toolkit](https://redux-toolkit.js.org) | 2.12.0 | Estado global de UI (loader global y tema) |
-| [React Redux](https://react-redux.js.org) | 9.3.0 | Bindings oficiales de Redux para React 19 |
-| [TanStack React Query](https://tanstack.com/query) | 5.101.4 | Cache, sincronización y mutaciones de datos del servidor |
-| [Axios](https://axios-http.com) | 1.19.0 | Cliente HTTP con interceptores (loader, refresh de sesión, redirección) |
-| [React Hook Form](https://react-hook-form.com) | 7.84.0 | Formularios con validación y rendimiento optimizado |
-| [jwt-decode](https://github.com/auth0/jwt-decode) | 4.0.0 | Decodificación de tokens JWT (validación de expiración) |
+| [Next.js](https://nextjs.org) - 16.3.0
+| [React](https://react.dev) - 19.2.8
+| [TypeScript](https://www.typescriptlang.org) - 5.9.3
+| [Tailwind CSS](https://tailwindcss.com) - 4.3.3
+| [Redux Toolkit](https://redux-toolkit.js.org) - 2.12.0
+| [React Redux](https://react-redux.js.org) - 9.3.0
+| [TanStack React Query](https://tanstack.com/query) - 5.101.4
+| [Axios](https://axios-http.com) - 1.19.0 
+| [React Hook Form](https://react-hook-form.com) - 7.84.0
+| [jwt-decode](https://github.com/auth0/jwt-decode) - 4.0.0
 
 ### Dependencias de desarrollo
 
-| Tecnología | Versión | Uso |
-| --- | --- | --- |
-| [Vitest](https://vitest.dev) | 4.1.10 | Framework de pruebas unitarias e integración |
-| [@vitest/coverage-v8](https://vitest.dev) | 4.1.10 | Reporte de cobertura con umbrales configurados |
-| [Testing Library (React)](https://testing-library.com) | 16.3.2 | Pruebas de hooks y componentes React |
-| [@testing-library/jest-dom](https://testing-library.com) | 7.0.0 | Matchers de DOM para Vitest |
-| [@testing-library/user-event](https://testing-library.com) | 14.6.3 | Interacción de usuario simulada |
-| [MSW](https://mswjs.io) | 2.15.0 | Intercepción de red para mocks de la API en pruebas |
-| [jsdom](https://github.com/jsdom/jsdom) | 30.0.1 | Entorno DOM para pruebas |
-| [ESLint](https://eslint.org) | 9.39.5 | Lint del código (config de Next.js) |
-| [eslint-config-next](https://nextjs.org) | 16.3.0 | Reglas oficiales de ESLint para Next.js |
-| [pnpm](https://pnpm.io) | 11.10.0 | Gestor de paquetes (definido en `packageManager`) |
+| [Vitest](https://vitest.dev) - 4.1.10
+| [@vitest/coverage-v8](https://vitest.dev) - 4.1.10 
+| [Testing Library (React)](https://testing-library.com) - 16.3.2
+| [@testing-library/jest-dom](https://testing-library.com) - 7.0.0
+| [@testing-library/user-event](https://testing-library.com) - 14.6.3
+| [MSW](https://mswjs.io) - 2.15.0
+| [jsdom](https://github.com/jsdom/jsdom) - 30.0.1
+| [ESLint](https://eslint.org) - 9.39.5
+| [eslint-config-next](https://nextjs.org) - 16.3.0
+| [pnpm](https://pnpm.io) - 11.10.0
 
 ---
 
 ## Arquitectura
 
-La aplicación sigue la arquitectura del **App Router de Next.js**, separando de forma estricta el **estado de UI** (Redux) del **estado del servidor** (React Query), y manteniendo una **capa de servicios** independiente que concentra todo el acceso HTTP a la API.
-
-### Flujo de datos
-
-```
-Componente (Server Component / Client Component)
-        │
-        ▼
-hooks/ (useTransactions, useLogin, …)          ← React Query (queries/mutations)
-        │
-        ▼
-services/ (transactions.ts, auth.ts, …)        ← Única capa que habla con axios
-        │
-        ▼
-lib/api/client.ts                               ← axios con interceptores
-        │
-        ▼
-API (Fastify + MongoDB)
-```
+La aplicación sigue un estructura de **App Router de Next.js**, separando el **estado del servidor** (React Query), y manteniendo una **capa de servicios** independiente que concentra todo el acceso HTTP de la API.
 
 ### Capas
 
@@ -95,7 +73,7 @@ El esquema de sesión es de **cookies con tokens rotables**:
 1. **Backend** emite `refresh_token` y `access_token` como cookies `httpOnly` en su propio dominio.
 2. **Frontend** replica una cookie de sesión (`auth_session`, `SameSite=Lax`, 7 días) en su dominio (`lib/auth/session-cookie.ts`). Es la señal que usa el middleware para decidir si el usuario está autenticado.
 3. **Middleware (`proxy.ts`)**: en el servidor, redirige a `/login` si falta sesión en rutas protegidas, y a `/dashboard` si hay sesión en `/`, `/login` o `/register`.
-4. **Interceptor de respuestas (`lib/api/client.ts`)**: cualquier respuesta `401` (excepto el propio endpoint de refresh) dispara un refresh de tokens vía `/auth/refresh`; las requests concurrentes se encolan hasta que el refresh termina. Si el refresh falla, se limpia la sesión y se redirige a `/login?from=…`.
+4. **Interceptor de respuestas (`lib/api/client.ts`)**: cualquier respuesta `401` (excepto el propio endpoint de refresh o el login y register) dispara un refresh de tokens vía `/auth/refresh`; la pila de requests se encolan hasta que el refresh termina. Si el refresh falla, se limpia la sesión y se redirige a `/login?from=…`.
 5. **Login/registro**: tras autenticarse, el cliente setea `auth_session` y redirige (el login a través de `resolvePostAuthPath`, que protege contra open redirect con `/login`, `/register`, `//` y `\`).
 
 ### Manejo de errores
@@ -111,7 +89,7 @@ El `tsconfig.json` usa `useUnknownInCatchVariables: false` para permitir el acce
 ### Estado global vs. servidor
 
 - **React Query** gestiona todo el estado del servidor: cache de transacciones, categorías, perfil y parámetros. `QueryProvider` configura `retry: 1`, `refetchOnWindowFocus: false` y `staleTime: 60s`.
-- **Redux** solo gestiona UI efímera y global: el **loader global** (incremento/decremento por request del interceptor) y el **tema** (persistido en `localStorage` con un script inline en `<head>` para evitar FOUC).
+- **Redux** solo gestiona UI efímera y global: el **loader global** (incremento/decremento por request del interceptor) y el **tema** (persistido en `localStorage` con un script inline en `<head>` para evitar FOUC (Flash of Unstyled Content)).
 
 ### Gráfica de saldo
 
@@ -131,8 +109,8 @@ El `BalanceCard` dibuja la gráfica de líneas con **SVG nativo** (sin librería
 ## Decisiones de diseño
 
 1. **Server Components por defecto** — Las páginas públicas (`home`, `login`, `register`) son server components con metadata SEO completa; solo los componentes interactivos se marcan `"use client"`.
-2. **Capa de servicios única** — `src/services` es el único lugar que importa `apiClient`, lo que facilita mockear la red en pruebas (MSW o `vi.mock`).
-3. **Claves tipadas de React Query** — Cada dominio expone `*.keys.ts` (ej. `transactionKeys.list(filters)`) para invalidar queries de forma consistente.
+2. **Capa de servicios** — `src/services` es el único lugar que importa `apiClient`.
+3. **Claves tipadas de React Query** — Cada hook expone `*.keys.ts` (ej. `transactionKeys.list(filters)`) para invalidar queries de forma consistente.
 4. **Errores mapeados por código** — Los mensajes de error de UI provienen de códigos del backend, nunca de strings del servidor ni de mensajes por defecto hardcodeados en cada componente.
 5. **Formato de moneda determinista** — `formatCompactCurrency` en `BalanceCard` evita la diferencia entre el ICU de Node y el del navegador (hydrate mismatch).
 6. **Filtros en la URL** — Los filtros de transacciones y de la gráfica viven en query params, no en estado local: compartibles, retrocedibles y limpiables.
@@ -193,7 +171,7 @@ El `BalanceCard` dibuja la gráfica de líneas con **SVG nativo** (sin librería
 
 ---
 
-## Scripts
+## Comandos
 
 | Comando | Descripción |
 | --- | --- |
@@ -211,14 +189,46 @@ El `BalanceCard` dibuja la gráfica de líneas con **SVG nativo** (sin librería
 
 | Variable | Descripción | Default |
 | --- | --- | --- |
-| `NEXT_PUBLIC_API_URL` | URL base de la API (Fastify) | `http://localhost:4000` |
-| `NEXT_PUBLIC_APP_URL` | URL pública de la app (para metadata/SEO) | `http://localhost:3000` |
+| `NEXT_PUBLIC_API_URL` | URL base de la API en Fastify | `http://localhost:4000` |
+| `NEXT_PUBLIC_APP_URL` | URL pública de la app (para metadata/SEO) | `https://personal-finance-tracker-sepia-rho.vercel.app` |
+
+Los valores de producción están en `.env.production` (usado al hacer build) y se documentan en [Entornos](#entornos).
+
+---
+
+## Entornos
+
+| Entorno | URL |
+| --- | --- |
+| **Frontend** | Desarrollo: `http://localhost:3000` |
+| | Producción: `https://personal-finance-tracker-sepia-rho.vercel.app` |
+| **Backend (API)** | Desarrollo: `http://localhost:4000` |
+| | Producción: `https://personalfinanceapi-production-b1ac.up.railway.app` |
+| **Docs API** | Swagger: `https://personalfinanceapi-production-b1ac.up.railway.app/docs` |
+
+---
+
+## SEO
+
+La aplicación incorpora prácticas de SEO para que la landing page se comparta y posicione correctamente:
+
+- **Metadata completa** (`src/app/layout.tsx` y `src/app/page.tsx`): `title` con plantilla, `description`, `canonical`, Open Graph (título, descripción, imagen) y Twitter Cards.
+- **Imagen social** en `public/landingpage.png` para el preview al compartir enlaces, resuelta contra `metadataBase` (URL absoluta de producción).
+- **Archivos estáticos**: `sitemap.ts`, `robots.ts`, `favicon.ico`, `icon.svg`, `apple-icon.png` y `opengraph-image.tsx`.
+- **JSON-LD** (`SoftwareApplication`) en la homepage para datos estructurados.
+- **SSR**: las páginas públicas son Server Components, lo que garantiza HTML indexable sin renderizado en cliente.
+
+### Resultado en Lighthouse
+
+![Resultado SEO en Lighthouse](docs/lighthouse-seo.png)
 
 ---
 
 ## Puesta en marcha
 
 Requisitos: Node.js ≥ 20 y pnpm.
+
+### Opción 1 — Todo en local (backend + frontend)
 
 ```bash
 # 1. Instalar dependencias
@@ -235,7 +245,28 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 pnpm dev
 ```
 
-La app estará disponible en `http://localhost:3000` y la documentación de la API en `http://localhost:4000/docs` (Swagger).
+La app estará disponible en `http://localhost:3000`.
+
+### Opción 2 — Frontend local con backend de producción (recomendada)
+
+Para probar el frontend sin levantar el backend localmente, apunta a la API desplegada en Railway:
+
+```bash
+# 1. Instalar dependencias
+pnpm install
+
+# 2. Variables de entorno apuntando al backend de producción
+# .env.local
+NEXT_PUBLIC_API_URL=https://personalfinanceapi-production-b1ac.up.railway.app
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# 3. Iniciar el frontend
+pnpm dev
+```
+
+### Opción 3 — Probar la app desplegada
+
+Sin instalar nada: visita `https://personal-finance-tracker-sepia-rho.vercel.app` (frontend en producción conectado al backend de producción).
 
 ---
 
@@ -251,7 +282,3 @@ Suite de **Vitest + Testing Library** con entorno `jsdom` y cobertura v8. Estruc
 Umbrales de cobertura (ver `vitest.config.ts`): 75% statements/lines/functions y 65% branches en `src/lib`, `src/services` y `src/store`.
 
 ---
-
-## Repos relacionados
-
-- **API**: `personal-finance-tracker-api` — Fastify, MongoDB (Mongoose), autenticación JWT con cookies rotables, OAuth (Google/GitHub), Cloudinary para avatares, Swagger en `/docs`.
