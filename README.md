@@ -14,7 +14,7 @@ Aplicación para el registro y visualización de finanzas personales: ingresos, 
 - [Variables de entorno](#variables-de-entorno)
 - [Entornos](#entornos)
 - [SEO](#seo)
-- [Puesta en marcha](#puesta-en-marcha)
+- [Probar aplicación](#probar-aplicación)
 - [Pruebas](#pruebas)
 
 ---
@@ -91,7 +91,7 @@ El `tsconfig.json` usa `useUnknownInCatchVariables: false` para permitir el acce
 - **React Query** gestiona todo el estado del servidor: cache de transacciones, categorías, perfil y parámetros. `QueryProvider` configura `retry: 1`, `refetchOnWindowFocus: false` y `staleTime: 60s`.
 - **Redux** solo gestiona UI efímera y global: el **loader global** (incremento/decremento por request del interceptor) y el **tema** (persistido en `localStorage` con un script inline en `<head>` para evitar FOUC (Flash of Unstyled Content)).
 
-### Gráfica de saldo
+### Gráfica
 
 El `BalanceCard` dibuja la gráfica de líneas con **SVG nativo** (sin librería de charts). Soporta:
 
@@ -224,7 +224,7 @@ La aplicación incorpora prácticas de SEO para que la landing page se comparta 
 
 ---
 
-## Puesta en marcha
+## Probar aplicación
 
 Requisitos: Node.js ≥ 20 y pnpm.
 
@@ -242,12 +242,12 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 # 3. Levantar el backend (repo personal-finance-tracker-api) en el puerto 4000
 
 # 4. Iniciar el frontend
-pnpm dev
+pnpm run dev
 ```
 
 La app estará disponible en `http://localhost:3000`.
 
-### Opción 2 — Frontend local con backend de producción (recomendada)
+### Opción 2 — Frontend local con backend de producción 
 
 Para probar el frontend sin levantar el backend localmente, apunta a la API desplegada en Railway:
 
@@ -261,10 +261,10 @@ NEXT_PUBLIC_API_URL=https://personalfinanceapi-production-b1ac.up.railway.app
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 # 3. Iniciar el frontend
-pnpm dev
+pnpm run dev
 ```
 
-### Opción 3 — Probar la app desplegada
+### Opción 3 — Probar la app desplegada (recomendada)
 
 Sin instalar nada: visita `https://personal-finance-tracker-sepia-rho.vercel.app` (frontend en producción conectado al backend de producción).
 
