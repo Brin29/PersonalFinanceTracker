@@ -42,7 +42,7 @@ export function EmailStep({ form, isBusy, onSubmit }: EmailStepProps) {
         })}
       />
 
-      <button type="submit" className="btn-primary mt-2" disabled={isBusy}>
+      <button type="submit" className="btn-primary mt-2 mb-6" disabled={isBusy}>
         {isBusy ? "Verificando…" : "Continuar"}
       </button>
     </form>

@@ -31,7 +31,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex h-screen items-center justify-center bg-ink/40 p-4 dark:bg-black/60"
+      className="modal-backdrop fixed inset-0 z-50 flex h-screen items-center justify-center bg-ink/40 p-4 dark:bg-black/60"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -39,7 +39,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
       aria-modal="true"
       aria-label={title}
     >
-      <div className="w-full max-w-md rounded-2xl border border-line bg-surface p-5 shadow-xl sm:p-6">
+      <div className="modal-panel w-full max-w-md rounded-2xl border border-line bg-surface p-5 shadow-xl sm:p-6">
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-lg font-semibold tracking-tight text-ink">
             {title}

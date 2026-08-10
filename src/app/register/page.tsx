@@ -33,37 +33,39 @@ export default function RegisterPage() {
       <div className="flex flex-col gap-6">
         <StepIndicator step={step} />
 
-        {step === 1 ? (
-          <>
-            <EmailStep
-              form={emailForm}
-              isBusy={isEmailBusy}
-              onSubmit={handleEmailSubmit}
-            />
-            <OAuthButtons />
-          </>
-        ) : null}
+        <div key={step} className="step-enter">
+          {step === 1 ? (
+            <>
+              <EmailStep
+                form={emailForm}
+                isBusy={isEmailBusy}
+                onSubmit={handleEmailSubmit}
+              />
+              <OAuthButtons />
+            </>
+          ) : null}
 
-        {step === 2 ? (
-          <>
-            <CodeStep
-              form={codeForm}
-              isBusy={isCodeBusy}
-              onSubmit={handleCodeSubmit}
-              email={email}
+          {step === 2 ? (
+            <>
+              <CodeStep
+                form={codeForm}
+                isBusy={isCodeBusy}
+                onSubmit={handleCodeSubmit}
+                email={email}
+                reset={resetCodeStep}
+              />
+            </>
+          ) : null}
+
+          {step === 3 ? (
+            <RegisterStep
+              form={registerForm}
+              isBusy={isRegisterBusy}
+              onSubmit={handleRegisterSubmit}
               reset={resetCodeStep}
             />
-          </>
-        ) : null}
-
-        {step === 3 ? (
-          <RegisterStep
-            form={registerForm}
-            isBusy={isRegisterBusy}
-            onSubmit={handleRegisterSubmit}
-            reset={resetCodeStep}
-          />
-        ) : null}
+          ) : null}
+        </div>
 
         <p className="text-center text-sm text-ink-soft">
           ¿Ya tienes cuenta?{" "}

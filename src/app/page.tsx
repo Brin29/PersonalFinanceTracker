@@ -144,7 +144,7 @@ export default async function HomePage() {
             />
             <div className="absolute inset-0 bg-linear-to-b from-ink/70 via-ink/55 to-ink/70" />
 
-            <div className="relative z-10 flex flex-col items-center gap-6 px-4 py-24 text-center sm:px-6">
+            <div className="hero-stack relative z-10 flex flex-col items-center gap-6 px-4 py-24 text-center sm:px-6">
               <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-paper/70">
                 Finanzas personales · sin complicaciones
               </p>
@@ -163,7 +163,7 @@ export default async function HomePage() {
               <div className="flex w-full max-w-sm flex-col gap-3 sm:w-auto sm:flex-row">
                 <Link
                   href="/register"
-                  className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-paper/30 px-7 text-sm font-semibold text-paper transition-colors hover:bg-paper/10 sm:w-auto"
+                  className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-paper/30 px-7 text-sm font-semibold text-paper transition hover:bg-paper/10 active:scale-[0.98] sm:w-auto"
                 >
                   Crear cuenta gratis
                 </Link>
@@ -226,7 +226,7 @@ export default async function HomePage() {
             </div>
             <Link
               href="/register"
-              className="inline-flex h-11 items-center justify-center rounded-lg bg-leaf-500 px-7 text-sm font-semibold text-ink transition-colors hover:bg-leaf-500/90"
+              className="inline-flex h-11 items-center justify-center rounded-lg bg-leaf-500 px-7 text-sm font-semibold text-ink transition hover:bg-leaf-500/90 active:scale-[0.98]"
             >
               Crear cuenta gratis
             </Link>
