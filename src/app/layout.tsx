@@ -61,10 +61,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es"
-      suppressHydrationWarning
+      suppressHydrationWarning // evitar falsos positivos antes de la hidratacion
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
+        {/* bloquear render FOUC */}
         <script
           id="theme-init"
           dangerouslySetInnerHTML={{

@@ -1,9 +1,14 @@
-const CURRENCY_FORMATTER = new Intl.NumberFormat("es-MX", {
+// minimumFractionDigits/maximumFractionDigits fijos: el CLDR del navegador
+// formatea COP con 0 decimales mientras que el ICU de Node usa 2, lo que
+// causa hydration mismatch entre server y client.
+const CURRENCY_FORMATTER = new Intl.NumberFormat("es-CO", {
   style: "currency",
-  currency: "MXN",
+  currency: "COP",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
 });
 
-const DATE_FORMATTER = new Intl.DateTimeFormat("es-MX", {
+const DATE_FORMATTER = new Intl.DateTimeFormat("es-CO", {
   day: "2-digit",
   month: "short",
   year: "numeric",

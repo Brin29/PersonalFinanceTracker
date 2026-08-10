@@ -29,21 +29,21 @@ const MOCK_TOTAL_EXPENSES = 2158;
 const INCOME_COLOR = "var(--color-leaf-500)";
 const EXPENSE_COLOR = "var(--color-gold-500)";
 
-const MONTH_LABEL = new Intl.DateTimeFormat("es-MX", {
+const MONTH_LABEL = new Intl.DateTimeFormat("es-CO", {
   month: "short",
 });
 
-const MONTH_YEAR_LABEL = new Intl.DateTimeFormat("es-MX", {
+const MONTH_YEAR_LABEL = new Intl.DateTimeFormat("es-CO", {
   month: "long",
   year: "numeric",
 });
 
-const DAY_LABEL = new Intl.DateTimeFormat("es-MX", {
+const DAY_LABEL = new Intl.DateTimeFormat("es-CO", {
   day: "numeric",
   month: "short",
 });
 
-const DAY_TOOLTIP_LABEL = new Intl.DateTimeFormat("es-MX", {
+const DAY_TOOLTIP_LABEL = new Intl.DateTimeFormat("es-CO", {
   day: "numeric",
   month: "short",
   year: "numeric",

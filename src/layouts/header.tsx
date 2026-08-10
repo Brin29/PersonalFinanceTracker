@@ -10,7 +10,7 @@ import { UserMenu } from "@/components/dashboard/user-menu";
 import { useLayout } from "./layout-context";
 import { isAuthRoute, isPrivateRoute } from "./routes";
 
-const DATE_FORMATTER = new Intl.DateTimeFormat("es-ES", {
+const DATE_FORMATTER = new Intl.DateTimeFormat("es-CO", {
   weekday: "long",
   day: "numeric",
   month: "long",
