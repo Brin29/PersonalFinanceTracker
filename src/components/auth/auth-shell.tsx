@@ -1,15 +1,22 @@
 import { Suspense, type ReactNode } from "react";
 import { BalanceCard } from "./balance-card";
+import Link from "next/link";
 
 export function Brand() {
   return (
     <div className="flex items-center gap-2.5">
-      <span className="flex size-7 items-center justify-center rounded-md bg-leaf-600 font-mono text-xs font-bold text-white">
-        F
-      </span>
-      <span className="font-mono text-sm font-semibold uppercase tracking-[0.25em] text-ink">
-        Finance
-      </span>
+      <Link
+        href="/"
+        className="flex items-center gap-2.5"
+        aria-label="Finance · Inicio"
+      >
+        <span className="flex size-7 items-center justify-center rounded-md bg-leaf-600 font-mono text-xs font-bold text-white">
+          F
+        </span>
+        <span className="font-mono text-sm font-semibold uppercase tracking-[0.25em] text-ink">
+          Finance
+        </span>
+      </Link>
     </div>
   );
 }

@@ -8,7 +8,7 @@ import MoonIcon from "@/components/ui/icons/moonIcon";
 
 const emptySubscribe = () => () => {};
 
-export function ThemeToggle() {
+export function ThemeToggle({ onDark = false }: { onDark?: boolean }) {
   const dispatch = useAppDispatch();
   const mode = useAppSelector((state) => state.theme.mode);
   const mounted = useSyncExternalStore(
@@ -23,7 +23,11 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={() => dispatch(themeActions.toggleTheme())}
-      className="rounded-lg p-2 text-ink-soft transition-colors hover:bg-ink/5 hover:text-ink"
+      className={`rounded-lg p-2 transition-colors ${
+        onDark
+          ? "text-paper/80 hover:bg-white/10 hover:text-paper"
+          : "text-ink-soft hover:bg-ink/5 hover:text-ink"
+      }`}
       aria-label={
         currentMode === "dark"
           ? "Cambiar a modo claro"

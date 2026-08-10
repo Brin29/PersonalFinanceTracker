@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Suspense, type ComponentType } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -38,18 +39,21 @@ const FEATURES = [
     title: "Registra al instante",
     description:
       "Anota ingresos y gastos en segundos. Tu historial queda organizado y siempre disponible.",
+    image: "/landingimg1.png",
   },
   {
     icon: DashboardIcon,
     title: "Visualiza tu balance",
     description:
       "Resumen de ingresos, gastos y balance neto por día o por mes, sin hojas de cálculo.",
+    image: "/landingimg2.png",
   },
   {
     icon: TagIcon,
     title: "Organiza por categorías",
     description:
       "Etiqueta cada movimiento para entender a dónde va tu dinero y tomar mejores decisiones.",
+    image: "/landingimg3.png",
   },
 ];
 
@@ -57,9 +61,10 @@ interface FeatureCardProps {
   icon: ComponentType<{ size?: number }>;
   title: string;
   description: string;
+  image: string;
 }
 
-function FeatureCard({ icon: Icon, title, description }: FeatureCardProps) {
+function FeatureCard({ icon: Icon, title, description, image }: FeatureCardProps) {
   return (
     <div className="rounded-2xl border border-line bg-surface p-5">
       <span className="flex size-9 items-center justify-center rounded-lg bg-leaf-50 text-leaf-600">
@@ -71,6 +76,16 @@ function FeatureCard({ icon: Icon, title, description }: FeatureCardProps) {
       <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
         {description}
       </p>
+      <div className="relative mt-4 aspect-video overflow-hidden rounded-xl border border-line">
+        <Image
+          src={image}
+          alt=""
+          fill
+          sizes="(max-width: 640px) 100vw, 33vw"
+          loading="lazy"
+          className="object-cover"
+        />
+      </div>
     </div>
   );
 }
@@ -115,26 +130,41 @@ export default async function HomePage() {
       />
 
       <div className="flex min-h-dvh flex-col">
-        <main className="mx-auto flex w-full mt-24 max-w-5xl flex-1 flex-col px-4 sm:px-6">
-          <section className="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-col items-center gap-6 py-12 text-center sm:py-20 lg:items-start lg:text-left">
-              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-ink-soft">
+        <main className="flex flex-1 flex-col">
+          <section className="relative flex min-h-dvh items-center justify-center overflow-hidden">
+            <video
+              className="absolute inset-0 h-full w-full object-cover"
+              src="/landingvideo.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              aria-hidden="true"
+            />
+            <div className="absolute inset-0 bg-linear-to-b from-ink/70 via-ink/55 to-ink/70" />
+
+            <div className="relative z-10 flex flex-col items-center gap-6 px-4 py-24 text-center sm:px-6">
+              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-paper/70">
                 Finanzas personales · sin complicaciones
               </p>
 
-              <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
+              <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight text-paper sm:text-5xl lg:text-6xl">
                 Tu dinero,
                 <br />
-                <span className="text-leaf-600">siempre al día.</span>
+                <span className="text-leaf-500">siempre al día.</span>
               </h1>
 
-              <p className="max-w-md text-base leading-relaxed text-ink-soft">
+              <p className="max-w-md text-base leading-relaxed text-paper/75">
                 Registra tus ingresos y gastos, y toma el control de tus
                 finanzas desde un solo lugar.
               </p>
 
               <div className="flex w-full max-w-sm flex-col gap-3 sm:w-auto sm:flex-row">
-                <Link href="/register" className="btn-ghost sm:w-auto sm:px-7">
+                <Link
+                  href="/register"
+                  className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-paper/30 px-7 text-sm font-semibold text-paper transition-colors hover:bg-paper/10 sm:w-auto"
+                >
                   Crear cuenta gratis
                 </Link>
                 <Link href="/login" className="btn-primary sm:w-auto sm:px-7">
@@ -142,33 +172,44 @@ export default async function HomePage() {
                 </Link>
               </div>
 
-              <p className="text-xs text-ink-soft">
+              <p className="text-xs text-paper/60">
                 Gratis para siempre · Sin tarjeta · Tus datos son privados
               </p>
             </div>
-            <div className="w-full lg:w-md">
-              <Suspense
-                fallback={
-                  <div className="h-80 animate-pulse rounded-2xl bg-surface" />
-                }
-              >
-                <BalanceCard mock />
-              </Suspense>
-            </div>
           </section>
 
-          <section
-            aria-label="Características"
-            className="grid gap-3 py-12 sm:grid-cols-3 sm:pb-20"
-          >
-            {FEATURES.map((feature) => (
-              <FeatureCard
-                key={feature.title}
-                icon={feature.icon}
-                title={feature.title}
-                description={feature.description}
-              />
-            ))}
+          <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 sm:px-6">
+            <section aria-label="Demo de la aplicación" className="py-12 sm:py-20">
+              <h2 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">
+                Así se ve tu balance
+              </h2>
+              <p className="mt-1.5 text-sm text-ink-soft">
+                Una vista clara de tus ingresos y gastos, día a día o por mes.
+              </p>
+              <div className="mt-6">
+                <Suspense
+                  fallback={
+                    <div className="h-80 animate-pulse rounded-2xl bg-surface" />
+                  }
+                >
+                  <BalanceCard mock />
+                </Suspense>
+              </div>
+            </section>
+
+            <section
+              aria-label="Características"
+              className="grid gap-3 pb-12 sm:grid-cols-3 sm:pb-20"
+            >
+              {FEATURES.map((feature) => (
+                <FeatureCard
+                  key={feature.title}
+                  icon={feature.icon}
+                  title={feature.title}
+                  description={feature.description}
+                  image={feature.image}
+                />
+              ))}
           </section>
 
           <section
@@ -190,6 +231,7 @@ export default async function HomePage() {
               Crear cuenta gratis
             </Link>
           </section>
+          </div>
         </main>
       </div>
     </>
