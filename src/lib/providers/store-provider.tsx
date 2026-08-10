@@ -6,8 +6,9 @@ import { store } from "@/store";
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
+    // Sincronizar estilo con HTML
     const applyTheme = () => {
-      const { mode } = store.getState().theme;
+      const { mode } = store.getState().theme; // Estado actual Redux
       document.documentElement.classList.toggle("dark", mode === "dark");
     };
 
