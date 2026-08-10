@@ -4,8 +4,7 @@ export function proxy(request: NextRequest) {
   // Validar que el usuario este autenticado
   // auth_session la setea el frontend en su propio dominio (backend esta en otro dominio)
   const hasSession =
-    request.cookies.has("auth_session") ||
-    request.cookies.has("refresh_token");
+    request.cookies.has("auth_session")
 
   const pathname = request.nextUrl.pathname;
   
