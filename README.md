@@ -139,7 +139,7 @@ El `BalanceCard` dibuja la gráfica de líneas con **SVG nativo** (sin librería
 │   │   ├── globals.css             # Tokens de tema y estilos base
 │   │   ├── proxy.ts                # Middleware de sesión (redirecciones)
 │   │   ├── robots.ts / sitemap.ts
-│   │   └── not-found.tsx
+│   │   └── not-found.tsx             # Página 404 para rutas inexistentes
 │   ├── components/
 │   │   ├── auth/                   # AuthShell, BalanceCard, formularios
 │   │   ├── dashboard/              # Shell, sidebar, header, profile
