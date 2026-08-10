@@ -91,7 +91,7 @@ El `tsconfig.json` usa `useUnknownInCatchVariables: false` para permitir el acce
 - **React Query** gestiona todo el estado del servidor: cache de transacciones, categorías, perfil y parámetros. `QueryProvider` configura `retry: 1`, `refetchOnWindowFocus: false` y `staleTime: 60s`.
 - **Redux** solo gestiona UI efímera y global: el **loader global** (incremento/decremento por request del interceptor) y el **tema** (persistido en `localStorage` con un script inline en `<head>` para evitar FOUC (Flash of Unstyled Content)).
 
-### Gráfica de saldo
+### Gráfica
 
 El `BalanceCard` dibuja la gráfica de líneas con **SVG nativo** (sin librería de charts). Soporta:
 
